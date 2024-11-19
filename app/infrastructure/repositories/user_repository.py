@@ -25,7 +25,7 @@ class UserRepository(IUserRepository):
         db_user = User(
             username=user.username,
             email=user.email,
-            hashed_password=user.password
+            hashed_password=user.hashed_password
         )
         
         async with self.session as session:
@@ -33,8 +33,8 @@ class UserRepository(IUserRepository):
             await session.commit()
         return UserInDB.model_validate(db_user)
     
-    async def get_user_by_username(self, username: str) -> UserCreate:
+    async def get_user_by_username(self, username: str) -> User | None:
         async with self.session as session:
             result = await session.execute(select(User).where(User.username==username))
             user = result.scalar_one_or_none()
-            return UserCreate.model_validate(user)
+            return user

@@ -1,20 +1,23 @@
 
-from typing import Iterable
+from typing import Annotated, Iterable
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from dependency_injector.wiring import inject, Provide
 
 from app.application.interfaces.iuser_service import IUserService
 from app.container import Container
-from app.infrastructure.security import get_password_hash
+from app.infrastructure.security import get_current_user, get_password_hash
 from app.presentation.schemas.user_schema import UserCreate, UserInDB
+
 
 
 router = APIRouter()
 
 @router.get("/users", response_model=Iterable[UserInDB], status_code=200)
 @inject
-async def get_all_users(service: IUserService = Depends(Provide[Container.user_service])) -> Iterable:
+async def get_all_users(
+    current_user: Annotated[UserInDB, Depends(get_current_user)], 
+    service: IUserService = Depends(Provide[Container.user_service])) -> Iterable:
     users = await service.get_all()
 
     return users
@@ -25,7 +28,7 @@ async def add_user(user_data: UserCreate, service: IUserService = Depends(Provid
 
     try:
 
-        user_data.password = await get_password_hash(user_data.password)
+        user_data.hashed_password = await get_password_hash(user_data.hashed_password)
         
         added_user = await service.save_user(user_data)
     
