@@ -5,7 +5,8 @@ class UserBase(BaseModel):
     username : str
 
 class UserCreate(UserBase):
-    password: str
+    hashed_password: str
+    model_config = ConfigDict(from_attributes=True)
 
 class UserInDB(UserBase):
     id: int

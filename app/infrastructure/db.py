@@ -23,7 +23,7 @@ engine= create_async_engine(
     pool_pre_ping=True
 )
 
-async_session = sessionmaker(engine, class_=AsyncSession)
+async_session = sessionmaker(engine, class_=AsyncSession,expire_on_commit=False)
 
 database = databases.Database(
     db_uri,
