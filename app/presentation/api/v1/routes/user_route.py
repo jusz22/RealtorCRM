@@ -7,13 +7,13 @@ from dependency_injector.wiring import inject, Provide
 from app.application.interfaces.iuser_service import IUserService
 from app.container import Container
 from app.infrastructure.security import get_password_hash
-from app.presentation.schemas.user_schema import UserCreate, UserInDB
+from app.presentation.schemas.user_schema import UserIn, UserDB
 
 
 
 router = APIRouter()
 
-@router.get("/users", response_model=Iterable[UserInDB], status_code=200)
+@router.get("/users", response_model=Iterable[UserDB], status_code=200)
 @inject
 async def get_all_users(
     service: IUserService = Depends(Provide[Container.user_service])) -> Iterable:
@@ -21,9 +21,9 @@ async def get_all_users(
 
     return users
 
-@router.post("/users", response_model=UserInDB, status_code=200)
+@router.post("/users", response_model=UserDB, status_code=200)
 @inject
-async def add_user(user_data: UserCreate, service: IUserService = Depends(Provide[Container.user_service])) -> UserInDB:
+async def add_user(user_data: UserIn, service: IUserService = Depends(Provide[Container.user_service])) -> UserDB:
 
     try:
 

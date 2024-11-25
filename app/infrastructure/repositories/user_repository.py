@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from app.infrastructure.models.user_model import User
 from app.domain.repositories.iuser_repository import IUserRepository
-from app.presentation.schemas.user_schema import UserCreate, UserInDB
+from app.presentation.schemas.user_schema import UserIn, UserDB
 
 from  sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,14 +13,14 @@ class UserRepository(IUserRepository):
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_all_users(self) -> Iterable[UserInDB]:
+    async def get_all_users(self) -> Iterable[UserDB]:
         async with self.session as session:
             result = await session.execute(select(User))
             users = result.scalars().all()
 
-        return [UserInDB.model_validate(user) for user in users]
+        return [UserDB.model_validate(user) for user in users]
         
-    async def save_user(self, user: UserCreate) -> UserInDB:
+    async def save_user(self, user: UserIn) -> UserDB:
         
         db_user = User(
             username=user.username,
@@ -31,4 +31,4 @@ class UserRepository(IUserRepository):
         async with self.session as session:
             session.add(db_user)
             await session.commit()
-        return UserInDB.model_validate(db_user)
+        return UserDB.model_validate(db_user)

@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 from typing import Iterable
 
 
-from app.presentation.schemas.user_schema import UserCreate, UserInDB
+from app.presentation.schemas.user_schema import UserIn, UserDB
 
 
 class IUserService(ABC):
     
     @abstractmethod
-    async def get_all(self) -> Iterable[UserInDB]:
+    async def get_all(self) -> Iterable[UserDB]:
         """_summary_
 
         Returns:
@@ -16,7 +16,7 @@ class IUserService(ABC):
         """
 
     @abstractmethod
-    async def save_user(self, user: UserCreate) -> UserCreate:
+    async def save_user(self, user: UserIn) -> UserIn:
         """_summary_
 
         Returns:
