@@ -12,7 +12,8 @@ from fastapi import FastAPI
 container = Container()
 container.wire(modules=[
     "app.presentation.api.v1.routes.user_route",
-    "app.presentation.api.v1.routes.auth.jwt"
+    "app.presentation.api.v1.routes.auth.jwt",
+    "app.infrastructure.security"
 ])
 
 

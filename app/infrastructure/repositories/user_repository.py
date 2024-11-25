@@ -32,9 +32,3 @@ class UserRepository(IUserRepository):
             session.add(db_user)
             await session.commit()
         return UserInDB.model_validate(db_user)
-    
-    async def get_user_by_username(self, username: str) -> User | None:
-        async with self.session as session:
-            result = await session.execute(select(User).where(User.username==username))
-            user = result.scalar_one_or_none()
-            return user

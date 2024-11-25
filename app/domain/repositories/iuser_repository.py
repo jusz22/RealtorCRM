@@ -20,11 +20,4 @@ class IUserRepository(ABC):
         Returns:
             UserCreate: _description_
         """
-
-    @abstractmethod
-    async def get_user_by_username(self, username: str) -> UserCreate:
-        """_summary_
-
-        Args:
-            username (str): _description_
-        """
+        

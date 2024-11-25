@@ -1,8 +1,12 @@
 from pydantic import BaseModel
 
 class Token(BaseModel):
-    token: str
+    access_token: str
     token_type: str
 
 class TokenData(BaseModel):
     username: str
+
+class TokenPayload(BaseModel):
+    sub: str = None
+    exp: int = None
