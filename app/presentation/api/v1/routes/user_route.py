@@ -1,5 +1,3 @@
-
-import stat
 from typing import Iterable
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError

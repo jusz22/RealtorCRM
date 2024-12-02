@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Iterable
 
-from sqlalchemy import delete
-
-
 from app.presentation.schemas.user_schema import UserIn, UserDB
 
 
