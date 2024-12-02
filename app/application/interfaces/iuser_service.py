@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Iterable
 
+from sqlalchemy import delete
+
 
 from app.presentation.schemas.user_schema import UserIn, UserDB
 
@@ -22,3 +24,11 @@ class IUserService(ABC):
         Returns:
             UserCreate: _description_
         """
+
+    @abstractmethod
+    async def get_user(self, user_id) -> UserDB | None:
+        """abstract method"""
+
+    @abstractmethod
+    async def delete_user(self, user_id) -> UserDB | None:
+        """abstract method"""

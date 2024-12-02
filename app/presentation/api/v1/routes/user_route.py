@@ -1,4 +1,5 @@
 
+import stat
 from typing import Iterable
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
@@ -36,3 +37,33 @@ async def add_user(user_data: UserIn, service: IUserService = Depends(Provide[Co
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with this email or password already exists")
+    
+@router.get("/users/{id}", response_model=UserDB, status_code=200)
+@inject
+async def get_user(
+    id: int,
+    service: IUserService = Depends(Provide[Container.user_service])) -> UserDB:
+
+    user = await service.get_user(id)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"There is no user of id: {id}"
+        )
+
+    return user
+
+@router.delete("/users/{id}", response_model=UserDB, status_code=200)
+@inject
+async def delete_user(
+    id: int,
+    service: IUserService = Depends(Provide[Container.user_service])) -> UserDB:
+
+    user = await service.delete_user(user_id=id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You are trying to delete a user that doesn't exist"
+        )
+    return user

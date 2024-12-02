@@ -20,4 +20,11 @@ class IUserRepository(ABC):
         Returns:
             UserCreate: _description_
         """
+    @abstractmethod
+    async def get_user(self, user_id: int) -> UserDB | None:
+        """abstract method"""
+
+    @abstractmethod
+    async def delete_user(self, user_id)-> UserDB | None:
+        """abstract method"""
         
