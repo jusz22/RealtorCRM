@@ -1,5 +1,4 @@
 import asyncio
-from typing import AsyncGenerator
 import databases
 from sqlalchemy.exc import OperationalError, DatabaseError
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
@@ -11,7 +10,7 @@ from asyncpg.exceptions import (
 
 from app.infrastructure.config import config
 
-from app.infrastructure.models.user_model import Base
+from app.infrastructure.models.base_model import Base
 
 
 
@@ -23,19 +22,13 @@ engine= create_async_engine(
     pool_pre_ping=True
 )
 
-async_session = sessionmaker(engine, class_=AsyncSession,expire_on_commit=False)
+async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 database = databases.Database(
     db_uri,
     force_rollback=True
 )
 
-async def get_db() -> AsyncGenerator:
-    async with async_session() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
 
 async def init_db(retries: int = 5, delay: int = 5) -> None:
 
@@ -43,7 +36,6 @@ async def init_db(retries: int = 5, delay: int = 5) -> None:
         try:
             async with engine.begin() as conn:
                 await conn.run_sync(Base.metadata.create_all)
-                print("hello")
             return
         except (
             OperationalError,

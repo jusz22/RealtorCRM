@@ -10,6 +10,7 @@ class AppConfig(BaseConfig):
     ALGORITHM: str = cfg("ALGORITHM", cast=str)
     SECRET_KEY: str = cfg("SECRET_KEY", cast=str)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = cfg("ACCESS_TOKEN_EXPIRE_MINUTES", cast=int)
+    API_STR: str = cfg("API_STR", cast=str)
 
 
 config = AppConfig()

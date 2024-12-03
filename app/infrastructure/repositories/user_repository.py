@@ -11,10 +11,10 @@ from  sqlalchemy.ext.asyncio import AsyncSession
 class UserRepository(IUserRepository):
 
     def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+        self._session = session
 
     async def get_all_users(self) -> Iterable[UserDB]:
-        async with self.session as session:
+        async with self._session as session:
             result = await session.execute(select(User))
             users = result.scalars().all()
 
@@ -28,19 +28,19 @@ class UserRepository(IUserRepository):
             hashed_password=user.hashed_password
         )
         
-        async with self.session as session:
+        async with self._session as session:
             session.add(db_user)
             await session.commit()
         return UserDB.model_validate(db_user)
     
     async def get_user(self, user_id) -> UserDB | None:
-        async with self.session as session:
+        async with self._session as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalar_one_or_none()
             return UserDB.model_validate(user) if user is not None else None
         
     async def delete_user(self, user_id) -> UserDB | None:
-        async with self.session as session:
+        async with self._session as session:
             user = await self.get_user(user_id=user_id)
             if not user: 
                 return None

@@ -6,4 +6,4 @@ class ListingPhoto(Base):
     __tablename__ = "listing_photos"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     listing_id: Mapped[int] = mapped_column(ForeignKey("listings.id"))
-    image_data: Mapped[LargeBinary] = mapped_column()
+    image_data: Mapped[bytes] = mapped_column(LargeBinary)
