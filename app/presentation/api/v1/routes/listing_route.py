@@ -4,6 +4,7 @@ from dependency_injector.wiring import inject, Provide
 from app.application.interfaces.ilisting_service import IListingService
 from app.container import Container
 from app.infrastructure.models.listing_photo_model import ListingPhoto
+from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 
 router = APIRouter()
 
@@ -25,3 +26,12 @@ async def add_listing_photos(
     await service.save_photos(uploaded_photos)
     
     return {"Done": "done"}
+
+@router.post("/listings")
+@inject
+async def add_lisitng(
+    listing: ListingIn,
+    service: IListingService = Depends(Provide[Container.listing_service])
+) -> ListingDB:
+    
+    return await service.save_listing(listing=listing)

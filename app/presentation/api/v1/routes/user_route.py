@@ -16,6 +16,7 @@ router = APIRouter()
 @inject
 async def get_all_users(
     service: IUserService = Depends(Provide[Container.user_service])) -> Iterable:
+    
     users = await service.get_all()
 
     return users
@@ -25,7 +26,6 @@ async def get_all_users(
 async def add_user(user_data: UserIn, service: IUserService = Depends(Provide[Container.user_service])) -> UserDB:
 
     try:
-
         user_data.hashed_password = await get_password_hash(user_data.hashed_password)
         
         added_user = await service.save_user(user_data)
