@@ -26,7 +26,7 @@ async def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate" : "Bearer"}
         )
-    access_token_expires = timedelta(config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await create_token({"sub": user.username}, access_token_expires)
 
     return Token(access_token=access_token, token_type="bearer")
