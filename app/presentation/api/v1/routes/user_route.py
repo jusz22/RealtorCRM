@@ -24,7 +24,7 @@ async def get_all_users(
     if (sort_by not in User.__annotations__ or sort_by == 'hashed_password') and (sort_by is not None):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="This column doesn't exist"
+            detail=f"Column '{sort_by}' doesn't exist"
         )
         
     sort_options = SortOptions(
