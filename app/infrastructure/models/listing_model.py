@@ -1,4 +1,7 @@
 import enum
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+
 from app.infrastructure.models.base_model import Base
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,7 +16,7 @@ class PropertyType(enum.Enum):
 
 class Listing(Base):
     __tablename__ = "listings"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(unique=True)
     location: Mapped[str] = mapped_column()
     street: Mapped[str] = mapped_column()
@@ -22,5 +25,8 @@ class Listing(Base):
     property_type: Mapped[PropertyType] = mapped_column(Enum(PropertyType))
     description: Mapped[str] = mapped_column()
     transaction_type: Mapped[TransactionType] = mapped_column(Enum(TransactionType))
+    floor: Mapped[str] = mapped_column()
+    num_of_floors: Mapped[str] = mapped_column()
+    build_year: Mapped[str] = mapped_column()
 
 

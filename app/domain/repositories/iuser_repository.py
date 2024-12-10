@@ -5,7 +5,7 @@ from app.presentation.schemas.user_schema import UserIn, UserDB
 class IUserRepository(ABC):
 
     @abstractmethod
-    async def get_all_users(self) -> Iterable[UserDB]:
+    async def get_all_users(self, query) -> Iterable[UserDB]:
         
         """_summary_
         """

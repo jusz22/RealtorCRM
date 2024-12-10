@@ -2,7 +2,9 @@ from typing import List
 from app.domain.repositories.ilisting_repository import IListingRepository
 from  sqlalchemy.ext.asyncio import AsyncSession
 
+from app.infrastructure.models.listing_model import Listing
 from app.infrastructure.models.listing_photo_model import ListingPhoto
+from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 
 class ListingRepository(IListingRepository):
     
@@ -13,3 +15,15 @@ class ListingRepository(IListingRepository):
         async with self._session as session:
             session.add_all(photos)
             await session.commit()
+
+    async def save_listing(self, listing: ListingIn) -> ListingDB:
+        
+        db_lisitng = Listing(**listing.model_dump())
+        
+        async with self._session as session:
+            session.add(db_lisitng)
+            await session.commit()
+            await session.refresh(db_lisitng)
+            return ListingDB(
+                id=db_lisitng.id,
+                **listing.model_dump())

@@ -13,9 +13,9 @@ class UserRepository(IUserRepository):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def get_all_users(self) -> Iterable[UserDB]:
+    async def get_all_users(self, query) -> Iterable[UserDB]:
         async with self._session as session:
-            result = await session.execute(select(User))
+            result = await session.execute(query)
             users = result.scalars().all()
 
         return [UserDB.model_validate(user) for user in users]
