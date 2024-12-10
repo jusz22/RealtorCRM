@@ -1,10 +1,12 @@
-from typing import Iterable
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated, Iterable
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.exc import IntegrityError
 from dependency_injector.wiring import inject, Provide
 
 from app.application.interfaces.iuser_service import IUserService
 from app.container import Container
+from app.domain.dtos.sort_options_dto import SortOptions
+from app.infrastructure.models.user_model import User
 from app.infrastructure.security import get_password_hash
 from app.presentation.schemas.user_schema import UserIn, UserDB
 
@@ -15,9 +17,22 @@ router = APIRouter()
 @router.get("/users", response_model=Iterable[UserDB], status_code=200)
 @inject
 async def get_all_users(
-    service: IUserService = Depends(Provide[Container.user_service])) -> Iterable:
-    
-    users = await service.get_all()
+    service: IUserService = Depends(Provide[Container.user_service]),
+    sort_order: Annotated[str | None, Query(description='Sort order')] = None,
+    sort_by: Annotated[str | None, Query(description='Column to sort by')] = None) -> Iterable:
+
+    if (sort_by not in User.__annotations__ or sort_by == 'hashed_password') and (sort_by is not None):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This column doesn't exist"
+        )
+        
+    sort_options = SortOptions(
+        column=sort_by,
+        order=sort_order
+    )
+
+    users = await service.get_all(sort_options=sort_options)
 
     return users
 

@@ -7,7 +7,7 @@ from app.presentation.schemas.user_schema import UserIn, UserDB
 class IUserService(ABC):
     
     @abstractmethod
-    async def get_all(self) -> Iterable[UserDB]:
+    async def get_all(self, sort_order: str | None) -> Iterable[UserDB]:
         """_summary_
 
         Returns:
