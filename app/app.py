@@ -8,6 +8,7 @@ from app.infrastructure.config import config
 from app.presentation.api.v1.routes.listing_route import router as listing_router
 from app.presentation.api.v1.routes.auth.jwt import router as jwt_router
 from app.presentation.api.v1.routes.user_route import router as user_router
+from app.presentation.api.v1.routes.client_router import router as client_router
 from app.container import Container
 from fastapi import FastAPI
 
@@ -16,7 +17,8 @@ container.wire(modules=[
     "app.presentation.api.v1.routes.user_route",
     "app.presentation.api.v1.routes.auth.jwt",
     "app.infrastructure.security",
-    "app.presentation.api.v1.routes.listing_route"
+    "app.presentation.api.v1.routes.listing_route",
+    "app.presentation.api.v1.routes.client_router"
 ])
 
 
@@ -32,3 +34,4 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(user_router, prefix=config.API_STR)
 app.include_router(jwt_router, prefix=config.API_STR)
 app.include_router(listing_router, prefix=config.API_STR)
+app.include_router(client_router, prefix=config.API_STR)
