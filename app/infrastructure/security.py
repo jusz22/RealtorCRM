@@ -32,8 +32,9 @@ async def authenticate_user(username: str, password: str) -> User | None:
     return user
 
 @inject
-async def get_user_by_username(username: str, session: AsyncSession = Depends(Provide[Container.db])) -> User | None:
-        print(username)
+async def get_user_by_username(
+    username: str, 
+    session: AsyncSession = Depends(Provide[Container.db])) -> User | None:
         result = await session.execute(select(User).where(User.username==username))
         return result.scalar_one_or_none()
 
