@@ -15,3 +15,6 @@ class ListingService(IListingService):
     
     async def save_listing(self, listing: ListingIn) -> ListingDB:
         return await self._repository.save_listing(listing=listing)
+    
+    async def get_listing(self):
+        return await self._repository.get_listing()

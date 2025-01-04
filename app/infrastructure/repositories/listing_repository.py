@@ -1,4 +1,6 @@
 from typing import List
+
+from sqlalchemy import select
 from app.domain.repositories.ilisting_repository import IListingRepository
 from  sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,3 +29,9 @@ class ListingRepository(IListingRepository):
             return ListingDB(
                 id=db_lisitng.id,
                 **listing.model_dump())
+        
+    async def get_listing(self):
+        async with self._session as session:
+            result = await session.execute(select(Listing))
+            listings = result.scalars().all()
+        return listings

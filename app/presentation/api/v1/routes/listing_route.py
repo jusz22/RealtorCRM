@@ -35,3 +35,10 @@ async def add_lisitng(
 ) -> ListingDB:
     
     return await service.save_listing(listing=listing)
+
+@router.get("/listings")
+@inject
+async def get_listing(
+    service: IListingService = Depends(Provide[Container.listing_service])) -> ListingDB:
+
+    return await service.get_listing()

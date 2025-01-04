@@ -4,6 +4,7 @@ from app.infrastructure.models.listing_model import PropertyType, TransactionTyp
 
 
 class ListingIn(BaseModel):
+    client_id: UUID4
     title: str 
     location: str 
     street: str 

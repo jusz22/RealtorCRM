@@ -1,8 +1,10 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Singleton
 
+from app.application.interfaces.services.client_service import ClientService
 from app.application.interfaces.services.email_service import EmailService
 from app.application.interfaces.services.listing_service import ListingService
+from app.infrastructure.repositories.client_repository import ClientRepository
 from app.infrastructure.repositories.listing_repository import ListingRepository
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.application.interfaces.services.user_service import UserService
@@ -12,6 +14,18 @@ from app.infrastructure.config import config
 
 class Container(DeclarativeContainer):
     db = Singleton(async_session)
+
+
+    client_repository = Singleton(
+        ClientRepository,
+        session = db
+    )
+    
+    client_service = Singleton(
+        ClientService,
+        repository = client_repository
+    
+)
 
     email_service = Singleton(
         EmailService,
