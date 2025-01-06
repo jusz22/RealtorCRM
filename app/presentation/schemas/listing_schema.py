@@ -1,15 +1,15 @@
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, ConfigDict
 
 from app.infrastructure.models.listing_model import PropertyType, TransactionType
 
 
 class ListingIn(BaseModel):
     client_id: UUID4
-    title: str 
-    location: str 
-    street: str 
-    price: str 
-    area: float 
+    title: str
+    location: str
+    street: str
+    price: str
+    area: float
     property_type: PropertyType
     description: str 
     transaction_type: TransactionType
@@ -20,3 +20,4 @@ class ListingIn(BaseModel):
 
 class ListingDB(ListingIn):
     id: UUID4
+    model_config = ConfigDict(from_attributes=True)

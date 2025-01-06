@@ -1,4 +1,6 @@
 from typing import List
+
+from pydantic import UUID4
 from app.application.interfaces.ilisting_service import IListingService
 from app.domain.repositories.ilisting_repository import IListingRepository
 from app.infrastructure.models.listing_photo_model import ListingPhoto
@@ -18,3 +20,6 @@ class ListingService(IListingService):
     
     async def get_listing(self):
         return await self._repository.get_listing()
+    
+    async def remove_listing(self, listing_id: UUID4):
+        return await self._repository.delete_listing(listing_id=listing_id)

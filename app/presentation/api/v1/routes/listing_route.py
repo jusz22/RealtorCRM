@@ -1,6 +1,7 @@
-from typing import List
+from typing import Any, List
 from fastapi import APIRouter, Depends, UploadFile
 from dependency_injector.wiring import inject, Provide
+from pydantic import UUID4
 from app.application.interfaces.ilisting_service import IListingService
 from app.container import Container
 from app.infrastructure.models.listing_photo_model import ListingPhoto
@@ -39,6 +40,16 @@ async def add_lisitng(
 @router.get("/listings")
 @inject
 async def get_listing(
-    service: IListingService = Depends(Provide[Container.listing_service])) -> ListingDB:
+    service: IListingService = Depends(Provide[Container.listing_service])) -> ListingDB | Any:
 
     return await service.get_listing()
+
+@router.delete("/listings/{listing_id}")
+@inject
+async def delete_listing(
+    listing_id: UUID4,
+    service: IListingService = Depends(Provide[Container.listing_service])):
+
+    await service.remove_listing(listing_id=listing_id)
+
+    return {"dsadas":32}
