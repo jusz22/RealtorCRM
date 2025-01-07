@@ -1,5 +1,3 @@
-import code
-from http.client import NOT_FOUND
 from sqlalchemy.exc import IntegrityError
 from typing import Annotated, Any, Dict, List
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile
