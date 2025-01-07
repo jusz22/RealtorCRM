@@ -1,7 +1,7 @@
 from typing import Iterable, List
 
 from pydantic import UUID4
-from sqlalchemy import delete, select
+from sqlalchemy import Select, delete, select
 from app.domain.repositories.ilisting_repository import IListingRepository
 from  sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,15 +31,26 @@ class ListingRepository(IListingRepository):
                 id=db_lisitng.id,
                 **listing.model_dump())
         
-    async def get_listing(self) -> Iterable[ListingDB]:
+    async def get_listings(self, query: Select) -> Iterable[ListingDB]:
         async with self._session as session:
-            result = await session.execute(select(Listing))
+            result = await session.execute(query)
             listings = result.scalars().all()
         return [ListingDB.model_validate(listing) for listing in listings]
     
-    async def delete_listing(self, listing_id: UUID4):
+    async def get_single_listing(self, listing_id) -> ListingDB | None:
+        async with self._session as session:
+            result = await session.execute(select(Listing).where(Listing.id == listing_id))
+            listing = result.scalars().one_or_none()
+        return ListingDB.model_validate(listing) if listing is not None else None
+    
+    async def delete_listing(self, listing_id: UUID4) -> ListingDB | None:
         
         async with self._session as session:
+            listing = await self.get_single_listing(lisitng_id=listing_id)
+
+            if not listing:
+                return None
+            
             await session.execute(delete(Listing).where(Listing.id==listing_id))
             await session.commit()
-            await session.execute(select(Listing).where(Listing.id == listing_id))
+            return listing
