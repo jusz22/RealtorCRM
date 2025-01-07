@@ -1,11 +1,13 @@
 from sqlalchemy.exc import IntegrityError
-from typing import Annotated, Any, Dict, List
+from typing import Annotated, Any, Dict, Iterable, List
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile
 from dependency_injector.wiring import inject, Provide
 from pydantic import UUID4
 from app.application.interfaces.ilisting_service import IListingService
 from app.container import Container
+from app.domain.dtos.filter_dto import FilterDTO
 from app.domain.dtos.sort_options_dto import SortOptions
+from app.infrastructure.const import OPERATORS
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 
@@ -49,13 +51,32 @@ async def add_listing(
 async def get_listings(
     service: IListingService = Depends(Provide[Container.listing_service]),
     sort_order: Annotated[str | None, Query(description='Sort order')] = None,
-    sort_by: Annotated[str | None, Query(description='Column to sort by')] = None) -> ListingDB | Any:
-
-    sort_options = SortOptions(
-        column=sort_by,
-        order=sort_order)
+    sort_by: Annotated[str | None, Query(description='Column to sort by')] = None,
+    filter: Annotated[str | None, Query(description="Filter format 'field_operator=value. Avilable operators [gt, gte, lt, lte, eq, ne, like]'")] = None) -> Iterable[ListingDB]:
     
-    return await service.get_listings(sort_options=sort_options)
+    try:
+        sort_options = SortOptions(
+            column=sort_by,
+            order=sort_order)
+        
+        if filter is not None:
+            field_operator, value = filter.split("=")
+            field, operator = field_operator.split("_")
+
+            if operator not in OPERATORS:
+                raise ValueError(f"Incorrect operator {operator}")
+
+            value = int(value) if value.isdigit() else value
+
+            filter = FilterDTO(
+                field=field,
+                operator=operator,
+                value=value
+            )
+        
+        return await service.get_listings(sort_options=sort_options, filter=filter)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail = f"Wrong filter format {filter}. Error {e}")
 
 @router.delete("/listings/{listing_id}")
 @inject

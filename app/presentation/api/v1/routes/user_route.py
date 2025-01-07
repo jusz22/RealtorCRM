@@ -29,8 +29,7 @@ async def get_all_users(
         
     sort_options = SortOptions(
         column=sort_by,
-        order=sort_order
-    )
+        order=sort_order)
 
     users = await service.get_all(sort_options=sort_options)
 
