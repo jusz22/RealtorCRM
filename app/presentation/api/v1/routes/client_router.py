@@ -13,10 +13,11 @@ router = APIRouter()
 @inject
 async def send_email(
     email_address: str,
+    listing_id: str,
     email_service: IEmailService = Depends(Provide[Container.email_service])
 ):
-    result = await email_service.send_email(to=email_address, subject="Test", html="<h1>Hello</h1>")
-
+    
+    result = await email_service.send_email(to=email_address, subject="Listing", listing_id=listing_id)
     return result
 
 @router.post("/clients")

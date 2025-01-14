@@ -24,13 +24,8 @@ class Container(DeclarativeContainer):
     client_service = Singleton(
         ClientService,
         repository = client_repository
-    
-)
+    )
 
-    email_service = Singleton(
-        EmailService,
-        API_KEY = config.RESEND_API_KEY)
-    
     user_repository = Factory(
         UserRepository,
         session = db
@@ -49,4 +44,9 @@ class Container(DeclarativeContainer):
         ListingService,
         repository = listing_repository
     )
+    
+    email_service = Singleton(
+        EmailService,
+        API_KEY = config.RESEND_API_KEY,
+        repository = listing_repository)
 

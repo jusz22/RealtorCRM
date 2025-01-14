@@ -7,8 +7,8 @@ from sqlalchemy import Enum, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 class TransactionType(enum.Enum):
-    SELL = 'Sell'
-    RENT = 'Rent'
+    SELL = 'sell'
+    RENT = 'rent'
 
 class PropertyType(enum.Enum):
     HOUSE = 'House'
@@ -29,5 +29,3 @@ class Listing(Base):
     floor: Mapped[str] = mapped_column()
     num_of_floors: Mapped[str] = mapped_column()
     build_year: Mapped[str] = mapped_column()
-
-
