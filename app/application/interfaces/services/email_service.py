@@ -111,18 +111,6 @@ class EmailService(IEmailService):
     </body>
     </html>""")
 
-    def _get_enum_value(enum_str: str):
-
-        module = importlib.import_module("app.infrastructure.models.listing_model")
-        
-        enum_class_name, property_name = enum_str.split('.')
-
-        enum_class = getattr(module, enum_class_name)
-
-        property_value = enum_class[property_name].value
-
-        return property_value
-
     async def get_listing_data(self, listing_id: str) -> Iterable:
 
         listing_data = await self._repository.get_single_listing(listing_id=listing_id)
