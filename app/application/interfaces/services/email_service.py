@@ -1,4 +1,5 @@
 import resend
+
 from app.application.interfaces.iemail_service import IEmailService
 
 
