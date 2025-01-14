@@ -1,7 +1,6 @@
 from typing import Iterable
 from jinja2 import Environment
 import resend
-import importlib
 
 from app.application.interfaces.iemail_service import IEmailService
 from app.domain.repositories.ilisting_repository import IListingRepository
