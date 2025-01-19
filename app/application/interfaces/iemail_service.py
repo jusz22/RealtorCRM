@@ -10,3 +10,7 @@ class IEmailService(ABC):
     @abstractmethod
     async def get_listing_data(self, listing_id: str) -> Iterable:
         """abstract method"""
+    
+    @abstractmethod
+    async def disconnect(self):
+        """abstract method"""

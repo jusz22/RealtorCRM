@@ -10,8 +10,6 @@ from app.infrastructure.repositories.user_repository import UserRepository
 from app.application.interfaces.services.user_service import UserService
 from app.infrastructure.db import async_session
 
-from app.infrastructure.config import config
-
 class Container(DeclarativeContainer):
     db = Singleton(async_session)
 
@@ -47,6 +45,5 @@ class Container(DeclarativeContainer):
     
     email_service = Singleton(
         EmailService,
-        API_KEY = config.RESEND_API_KEY,
         repository = listing_repository)
 

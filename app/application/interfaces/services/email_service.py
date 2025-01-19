@@ -1,17 +1,23 @@
+import aiosmtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Iterable
 from jinja2 import Environment
-import resend
 
 from app.application.interfaces.iemail_service import IEmailService
 from app.domain.repositories.ilisting_repository import IListingRepository
+from app.infrastructure.config import config
 
 
 class EmailService(IEmailService):
-    def __init__(self, API_KEY: str, repository: IListingRepository):
+    def __init__(self, repository: IListingRepository):
+        self.smtp_srv_addr: str = "smtp.gmail.com"
+        self.smtp_srv_port = 587
+        self.gmail_pass: str = config.GMAIL_GENERATED_PASSWORD
+        self.gmail_addr: str = config.GMAIL_ADDRESS
+        self._smtp: aiosmtplib.SMTP | None = None
 
         self._repository = repository
-        
-        resend.api_key=API_KEY
 
         self.env = Environment(enable_async=True)
     
@@ -25,7 +31,7 @@ class EmailService(IEmailService):
                 body {
                     font-family: Arial, sans-serif;
                     line-height: 1.6;
-                    color: #333333;
+                    color: #000000;
                     margin: 0 auto;
                     padding: 20px;
                 }
@@ -63,7 +69,7 @@ class EmailService(IEmailService):
                     text-align: center;
                     padding: 20px;
                     font-size: 0.9em;
-                    color: #666666;
+                    color: #1cba46;
                 }
             </style>
         </head>
@@ -114,9 +120,17 @@ class EmailService(IEmailService):
 
         listing_data = await self._repository.get_single_listing(listing_id=listing_id)
         return listing_data.model_dump()
+    
+    async def get_smtp_conn(self):
+        if self._smtp is None or not self._smtp.is_connected:
+            self._smtp = aiosmtplib.SMTP(hostname=self.smtp_srv_addr, port=self.smtp_srv_port)
+            await self._smtp.connect()
+            await self._smtp.login(self.gmail_addr, self.gmail_pass)
+        return self._smtp
 
 
     async def send_email(self, to, subject, listing_id: str):
+        
 
         listing_data = await self.get_listing_data(listing_id=listing_id)
         
@@ -135,17 +149,26 @@ class EmailService(IEmailService):
         }
         
         html = await self.email_template.render_async(**template_data)
-        
-        params = {
-            "from": "onboarding@resend.dev",
-            "to": to,
-            "subject": subject,
-            "html": html
-        }
 
         if isinstance(to, str):
             to = [to]
 
-        response = resend.Emails.send(params=params)
+        body = MIMEMultipart()
+        body["From"] = self.gmail_addr
+        body["To"] = ", ".join(to)
+        body["Subject"] = subject
+
+        body.attach(MIMEText(html, "html"))
+
+        try:
+            smtp = await self.get_smtp_conn()
+            await smtp.send_message(body)
+            await smtp.quit()
+            return {"response": "email sent successfully"}
+        except Exception:
+            self._smtp = None
         
-        return response
+    async def disconnect(self):
+        if self._smtp and self._smtp.is_connected:
+            await self._smtp.quit()
+            self._smtp = None
