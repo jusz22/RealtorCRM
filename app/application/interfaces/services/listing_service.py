@@ -22,11 +22,14 @@ class ListingService(IListingService):
     async def save_listing(self, listing: ListingIn) -> ListingDB:
         return await self._repository.save_listing(listing=listing)
     
-    async def get_listings(self, sort_options: SortOptions, filter: FilterDTO) -> Iterable[ListingDB]:
+    async def get_listings(
+            self,
+            sort_options: SortOptions, 
+            filter: FilterDTO) -> Iterable[ListingDB]:
         query = select(Listing)
         sort_func = sort_options.get_sort_func()
+        
         if filter is not None:
-
             filter_column = getattr(Listing, filter.field)
             filter_operator = filter.get_operator()
             filter_exp = getattr(filter_column, filter_operator)
