@@ -6,9 +6,10 @@ from pydantic import EmailStr
 from app.application.interfaces.iclient_service import IClientService
 from app.container import Container
 from app.application.interfaces.iemail_service import IEmailService
+from app.infrastructure.security import verify_token
 from app.presentation.schemas.client_schema import ClientDB, ClientIn
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_token)])
 
 
 @router.post("/email")

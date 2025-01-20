@@ -5,9 +5,10 @@ from fastapi.responses import StreamingResponse
 
 from app.application.interfaces.igraph_service import IGraphService
 from app.container import Container
+from app.infrastructure.security import verify_token
 
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_token)])
 
 @router.get("/graph")
 @inject

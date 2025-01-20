@@ -34,7 +34,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(user_router, prefix=config.API_STR)
-app.include_router(jwt_router, prefix=config.API_STR)
+app.include_router(jwt_router, prefix=config.API_STR, dependencies=[])
 app.include_router(listing_router, prefix=config.API_STR)
 app.include_router(client_router, prefix=config.API_STR)
 app.include_router(graph_router, prefix=config.API_STR)

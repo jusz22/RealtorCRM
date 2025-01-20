@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 class Token(BaseModel):
@@ -9,4 +10,4 @@ class TokenData(BaseModel):
 
 class TokenPayload(BaseModel):
     sub: str = None
-    exp: int = None
+    exp: datetime = None

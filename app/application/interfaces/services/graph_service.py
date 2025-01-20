@@ -1,17 +1,17 @@
 from typing import Iterable
 from sqlalchemy import select
+
 from app.domain.repositories.ilisting_repository import IListingRepository
+from app.presentation.schemas.listing_schema import ListingDB
+from app.infrastructure.models.listing_model import Listing
 
 import seaborn as sns
 import pandas as pd
 import matplotlib
 
-from app.presentation.schemas.listing_schema import ListingDB
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
-
-from app.infrastructure.models.listing_model import Listing
 
 class GraphService:
 

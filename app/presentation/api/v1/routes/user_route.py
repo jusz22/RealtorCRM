@@ -7,12 +7,12 @@ from app.application.interfaces.iuser_service import IUserService
 from app.container import Container
 from app.domain.dtos.sort_options_dto import SortOptions
 from app.infrastructure.models.user_model import User
-from app.infrastructure.security import get_password_hash
+from app.infrastructure.security import get_password_hash, verify_token
 from app.presentation.schemas.user_schema import UserIn, UserDB
 
 
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_token)])
 
 @router.get("/users", response_model=Iterable[UserDB], status_code=200)
 @inject

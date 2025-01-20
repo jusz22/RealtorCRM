@@ -10,9 +10,10 @@ from app.domain.dtos.filter_dto import FilterDTO
 from app.domain.dtos.sort_options_dto import SortOptions
 from app.infrastructure.const import OPERATORS
 from app.infrastructure.models.listing_photo_model import ListingPhoto
+from app.infrastructure.security import verify_token
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_token)])
 
 @router.post("/listings/{listing_id}/photos", status_code=200)
 @inject
