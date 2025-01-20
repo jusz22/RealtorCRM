@@ -15,7 +15,7 @@ class IListingRepository(ABC):
         """abstract method"""
     
     @abstractmethod
-    async def save_listing(self, listing: ListingIn) -> ListingIn:
+    async def save_listing(self, listings: ListingIn):
         """abstract method"""
     
     @abstractmethod

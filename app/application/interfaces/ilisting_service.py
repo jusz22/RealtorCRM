@@ -15,7 +15,7 @@ class IListingService(ABC):
         """abstract method"""
 
     @abstractmethod
-    async def save_listing(self, listing: ListingIn) -> ListingIn:
+    async def save_listing(self, listings: Iterable[ListingIn]):
         """abstract method"""
 
     @abstractmethod

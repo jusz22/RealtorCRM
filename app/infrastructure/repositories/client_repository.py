@@ -1,3 +1,5 @@
+from typing import Iterable
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.repositories.iclient_repository import IClientRepository
@@ -21,3 +23,10 @@ class ClientRepository(IClientRepository):
             return ClientDB(
                 id=db_client.id,
                 **client.model_dump())
+        
+    async def get_all_clients(self) -> Iterable[ClientIn]:
+
+        async with self._session as session:
+            result = await session.execute(select(Client))
+            clients = result.scalars().all()
+        return [ClientDB.model_validate(client) for client in clients]

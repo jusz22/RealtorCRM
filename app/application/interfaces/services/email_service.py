@@ -1,3 +1,4 @@
+from email.mime.image import MIMEImage
 import aiosmtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -5,12 +6,13 @@ from typing import Iterable
 from jinja2 import Environment
 
 from app.application.interfaces.iemail_service import IEmailService
+from app.application.interfaces.igraph_service import IGraphService
 from app.domain.repositories.ilisting_repository import IListingRepository
 from app.infrastructure.config import config
 
 
 class EmailService(IEmailService):
-    def __init__(self, repository: IListingRepository):
+    def __init__(self, repository: IListingRepository, graph_service: IGraphService):
         self.smtp_srv_addr: str = "smtp.gmail.com"
         self.smtp_srv_port = 587
         self.gmail_pass: str = config.GMAIL_GENERATED_PASSWORD
@@ -18,11 +20,12 @@ class EmailService(IEmailService):
         self._smtp: aiosmtplib.SMTP | None = None
 
         self._repository = repository
+        self.graph_service = graph_service
 
         self.env = Environment(enable_async=True)
     
-        self.email_template = self.env.from_string("""
-        <!DOCTYPE html>
+        self.email_template = self.env.from_string(
+        """<!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
@@ -54,7 +57,6 @@ class EmailService(IEmailService):
                 .table-container {
                     padding: 20px;
                     }
-                    
                 table {
                     width: 100%;
                     border-collapse: collapse;
@@ -102,7 +104,7 @@ class EmailService(IEmailService):
                     <td>Build year</td>
                     <td> {{build_year}} </td>
                 </tr>
-            </table>           
+            </table>
         </div>
         <div>
             <b>Description</b>
@@ -110,9 +112,12 @@ class EmailService(IEmailService):
         <div>
             {{ description }}
         </div>
-            <div class="footer">
-                <p>This is an automated email from RealtorCRM</p>
-            </div>
+        <div>
+            <img src="cid:image1">
+        </div>
+        <div class="footer">
+            <p>This is an automated email from RealtorCRM</p>
+        </div>
     </body>
     </html>""")
 
@@ -133,6 +138,12 @@ class EmailService(IEmailService):
         
 
         listing_data = await self.get_listing_data(listing_id=listing_id)
+
+        graph_buffer = await self.graph_service.generate_graph_buffer()
+
+        graph = graph_buffer.getvalue()
+
+        graph_buffer.close()
         
         template_data = {
             "title": listing_data["title"],
@@ -145,7 +156,8 @@ class EmailService(IEmailService):
             "transaction_type": listing_data["transaction_type"].value, 
             "floor": listing_data["floor"],
             "num_of_floors": listing_data["num_of_floors"],
-            "build_year": listing_data["build_year"]
+            "build_year": listing_data["build_year"],
+            "graph": graph,
         }
         
         html = await self.email_template.render_async(**template_data)
@@ -158,7 +170,13 @@ class EmailService(IEmailService):
         body["To"] = ", ".join(to)
         body["Subject"] = subject
 
-        body.attach(MIMEText(html, "html"))
+        body.attach(MIMEText(html, "html", "UTF-8"))
+
+        img = MIMEImage(graph)
+        img.add_header('Content-ID', '<image1>')
+        img.add_header('Content-Disposition', 'attachment', filename="graph.png")
+
+        body.attach(img)
 
         try:
             smtp = await self.get_smtp_conn()

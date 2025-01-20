@@ -19,8 +19,8 @@ class ListingService(IListingService):
     async def save_photos(self, photos: List[ListingPhoto]):
         return await self._repository.save_photos(photos=photos)
     
-    async def save_listing(self, listing: ListingIn) -> ListingDB:
-        return await self._repository.save_listing(listing=listing)
+    async def save_listing(self, listings: Iterable[ListingIn]):
+        return await self._repository.save_listing(listings=listings)
     
     async def get_listings(
             self,

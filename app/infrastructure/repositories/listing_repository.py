@@ -19,18 +19,14 @@ class ListingRepository(IListingRepository):
             session.add_all(photos)
             await session.commit()
 
-    async def save_listing(self, listing: ListingIn) -> ListingDB:
-        
-        db_lisitng = Listing(**listing.model_dump())
-        
+    async def save_listing(self, listings: Iterable[ListingIn]):
+
+        db_listing = [Listing(**listing.model_dump()) for listing in listings]
+
         async with self._session as session:
-            session.add(db_lisitng)
+            session.add_all(db_listing)
             await session.commit()
-            await session.refresh(db_lisitng)
-            return ListingDB(
-                id=db_lisitng.id,
-                **listing.model_dump())
-        
+
     async def get_listings(self, query: Select) -> Iterable[ListingDB]:
         async with self._session as session:
             result = await session.execute(query)

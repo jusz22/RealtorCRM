@@ -1,6 +1,7 @@
+from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
-from typing import Annotated, Any, Dict, Iterable, List
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile
+from typing import Annotated, Dict, Iterable, List
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, UploadFile
 from dependency_injector.wiring import inject, Provide
 from pydantic import UUID4
 from app.application.interfaces.ilisting_service import IListingService
@@ -35,13 +36,13 @@ async def add_listing_photos(
 @router.post("/listings")
 @inject
 async def add_listing(
-    listing: ListingIn,
+    listings: Annotated[Iterable[ListingIn], Body()],
     service: IListingService = Depends(Provide[Container.listing_service])
-) -> ListingDB | Dict:
+) -> Dict:
     
     try:
-        added_lisitng = await service.save_listing(listing=listing)
-        return added_lisitng
+        await service.save_listing(listings=listings)
+        return JSONResponse({"response:": "Listings added successfully"})
     except IntegrityError:
         return {"title": "already exists"}
 

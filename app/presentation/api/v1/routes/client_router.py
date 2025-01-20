@@ -1,3 +1,4 @@
+from typing import Iterable
 from fastapi import APIRouter, Depends, HTTPException, status
 from dependency_injector.wiring import Provide, inject
 from pydantic import EmailStr
@@ -20,7 +21,7 @@ async def send_email(
     try:
         return await email_service.send_email(to=email_address, subject="Listing", listing_id=listing_id)
     except Exception as e:
-         raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail= f"Couldn't send the email {str(e)}")
+        raise HTTPException(status_code=status.HTTP_504_GATEWAY_TIMEOUT, detail= f"Couldn't send the email {str(e)}")
 
 @router.post("/clients")
 @inject
@@ -29,4 +30,10 @@ async def add_client(
     service: IClientService = Depends(Provide[Container.client_service])
 ) -> ClientDB:
         return await service.add_client(client=client)
-    
+
+@router.get("/clients")
+@inject
+async def get_all_clients(
+    service: IClientService = Depends(Provide[Container.client_service])
+) -> Iterable[ClientDB]:
+    return await service.get_all_clients()
