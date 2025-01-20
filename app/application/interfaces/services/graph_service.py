@@ -61,10 +61,14 @@ class GraphService:
 
         df = df.groupby(['year', 'month']).mean().round()
 
-        if year_or_all:
+        date_indexes = df.index.get_level_values(0).tolist()
+
+        if year_or_all in date_indexes:
             sns.relplot(data=df.loc[year_or_all], x="month", y="price", kind="line", height=6, aspect=2)
+            plt.title(f"{year_or_all}")
         else:
             sns.relplot(data=df, x="month", y="price", kind="line", hue="year", height=6, aspect=2)
+            plt.title("All years")
         
         plt.xlim(1, 12)
 
