@@ -10,6 +10,10 @@ RUN apk del .tmp-build-deps
 
 RUN mkdir /app
 COPY ./app /app
+COPY ./start.sh /start.sh
+COPY ./populate_db.py /populate_db.py
+
+RUN chmod +x /start.sh
 
 RUN adduser -D user
 USER user
