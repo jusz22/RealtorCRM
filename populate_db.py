@@ -457,7 +457,7 @@ async def populate_db():
     ),
     Listing(
         client_id="d21568c9-1389-4cc2-a7b4-bee3fdfe55f4",
-        title="Modern Villa",
+        title="Old Villa",
         location="Hillcrest",
         street="144 Hilltop Road",
         price=1500000,
@@ -537,8 +537,8 @@ async def populate_db():
         session.add_all(listing_data)
         await session.commit()
     
-    except IntegrityError:
-        print("Data was already inserted")
+    except IntegrityError as d:
+        print(f"Data was already inserted {d}")
     
     except Exception as e:
         print(f"{e}")
