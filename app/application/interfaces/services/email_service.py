@@ -1,8 +1,9 @@
 from email.mime.image import MIMEImage
-import aiosmtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Iterable
+
+import aiosmtplib
 from jinja2 import Environment
 
 from app.application.interfaces.iemail_service import IEmailService
@@ -23,9 +24,9 @@ class EmailService(IEmailService):
         self.graph_service = graph_service
 
         self.env = Environment(enable_async=True)
-    
+
         self.email_template = self.env.from_string(
-        """<!DOCTYPE html>
+            """<!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
@@ -119,24 +120,23 @@ class EmailService(IEmailService):
             <p>This is an automated email from RealtorCRM</p>
         </div>
     </body>
-    </html>""")
+    </html>"""
+        )
 
     async def get_listing_data(self, listing_id: str) -> Iterable:
-
         listing_data = await self._repository.get_single_listing(listing_id=listing_id)
         return listing_data.model_dump()
-    
+
     async def get_smtp_conn(self):
         if self._smtp is None or not self._smtp.is_connected:
-            self._smtp = aiosmtplib.SMTP(hostname=self.smtp_srv_addr, port=self.smtp_srv_port)
+            self._smtp = aiosmtplib.SMTP(
+                hostname=self.smtp_srv_addr, port=self.smtp_srv_port
+            )
             await self._smtp.connect()
             await self._smtp.login(self.gmail_addr, self.gmail_pass)
         return self._smtp
 
-
     async def send_email(self, to, subject, listing_id: str):
-        
-
         listing_data = await self.get_listing_data(listing_id=listing_id)
 
         graph_buffer = await self.graph_service.generate_graph_buffer()
@@ -144,7 +144,7 @@ class EmailService(IEmailService):
         graph = graph_buffer.getvalue()
 
         graph_buffer.close()
-        
+
         template_data = {
             "title": listing_data["title"],
             "location": listing_data["location"],
@@ -153,13 +153,13 @@ class EmailService(IEmailService):
             "area": listing_data["area"],
             "property_type": listing_data["property_type"].value,
             "description": listing_data["description"],
-            "transaction_type": listing_data["transaction_type"].value, 
+            "transaction_type": listing_data["transaction_type"].value,
             "floor": listing_data["floor"],
             "num_of_floors": listing_data["num_of_floors"],
             "build_year": listing_data["build_year"],
             "graph": graph,
         }
-        
+
         html = await self.email_template.render_async(**template_data)
 
         if isinstance(to, str):
@@ -173,8 +173,8 @@ class EmailService(IEmailService):
         body.attach(MIMEText(html, "html", "UTF-8"))
 
         img = MIMEImage(graph)
-        img.add_header('Content-ID', '<image1>')
-        img.add_header('Content-Disposition', 'attachment', filename="graph.png")
+        img.add_header("Content-ID", "<image1>")
+        img.add_header("Content-Disposition", "attachment", filename="graph.png")
 
         body.attach(img)
 
@@ -185,8 +185,12 @@ class EmailService(IEmailService):
             return {"response": "email sent successfully"}
         except Exception:
             self._smtp = None
-        
+
     async def disconnect(self):
         if self._smtp and self._smtp.is_connected:
-            await self._smtp.quit()
-            self._smtp = None
+            try:
+                await self._smtp.quit()
+            except aiosmtplib.SMTPException:
+                pass
+            finally:
+                self._smtp = None
