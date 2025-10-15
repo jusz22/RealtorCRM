@@ -12,6 +12,7 @@ from app.presentation.api.v1.routes.client_router import router as client_router
 from app.presentation.api.v1.routes.graph_router import router as graph_router
 from app.container import Container
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 container = Container()
 container.wire(modules=[
@@ -38,3 +39,13 @@ app.include_router(jwt_router, prefix=config.API_STR, dependencies=[])
 app.include_router(listing_router, prefix=config.API_STR)
 app.include_router(client_router, prefix=config.API_STR)
 app.include_router(graph_router, prefix=config.API_STR)
+
+origins = ["http://localhost:4200"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
