@@ -1,5 +1,6 @@
 from typing import Iterable
 
+import sqlalchemy
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import EmailStr
@@ -24,10 +25,15 @@ async def send_email(
         return await email_service.send_email(
             to=email_address, subject="Listing", listing_id=listing_id
         )
-    except Exception as e:
+    except sqlalchemy.exc.DBAPIError:
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-            detail=f"Couldn't send the email {str(e)}",
+            detail="No such listing id in db",
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail="Couldn't send the email",
         )
 
 

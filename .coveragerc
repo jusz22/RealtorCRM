@@ -1,0 +1,16 @@
+[run]   
+omit = 
+    */tests/*
+    */__init__.py
+    */i*
+    app\application\interfaces\services\user_service.py
+    app\application\interfaces\services\client_service.py
+    app/infrastructure/repositories/*
+    app/infrastructure/models/*
+    app/infrastructure/config.py
+    app/infrastructure/db.py
+    app/infrastructure/const.py
+    app/presentation/*
+    app/container.py
+    app/domain/*
+

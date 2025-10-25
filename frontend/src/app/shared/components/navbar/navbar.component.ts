@@ -17,14 +17,17 @@ export class NavbarComponent implements OnInit {
       {
         label: 'Home',
         icon: PrimeIcons.HOME,
+        routerLink: '/',
       },
       {
         label: 'Klienci',
         icon: PrimeIcons.USERS,
+        routerLink: '/clients',
       },
       {
         label: 'Oferty',
         icon: PrimeIcons.WAREHOUSE,
+        routerLink: '/offers',
       },
     ];
   }

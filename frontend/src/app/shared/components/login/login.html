@@ -2,11 +2,18 @@
   <p-iftalabel>
     <input type="text" pInputText formControlName="username" />
     <label for="username">Username</label>
+    @if(loginForm.controls.username.invalid){
+    <p-message severity="error" size="small" variant="simple">Provide a username</p-message>
+    }
   </p-iftalabel>
   <p-iftalabel>
     <p-password formControlName="password" inputId="password" [feedback]="false" />
     <label for="password">Password</label>
+    @if(loginForm.controls.password.invalid){
+    <p-message severity="error" size="small" variant="simple">Provide a password</p-message>
+    }
   </p-iftalabel>
+
   <button pButton type="submit">
     <span pButtonLabel>Log In</span>
   </button>

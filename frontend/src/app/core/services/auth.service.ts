@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Token } from './auth.model';
 
@@ -19,7 +19,16 @@ export class AuthService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       })
-      .subscribe((res) => this.saveToken(res));
+      .subscribe({
+        next: (res) => this.saveToken(res),
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            return { error: 'Wrong login or password' };
+          }
+          if (err.status && err.status !== 401) return { error: 'Error' };
+          return;
+        },
+      });
   }
 
   isAuthenticated() {
