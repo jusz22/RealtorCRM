@@ -27,7 +27,7 @@ export class NavbarComponent implements OnInit {
       {
         label: 'Oferty',
         icon: PrimeIcons.WAREHOUSE,
-        routerLink: '/offers',
+        routerLink: '/listings',
       },
     ];
   }

@@ -1,0 +1,13 @@
+<div>
+  @if(!editMode()) {
+  <p (click)="onClickText()">{{ data().value }}</p>
+  } @else {
+  <input #inputRef pInputText [value]="data().value" />
+  <button pButton (click)="onSave({ key: data().key, value: inputRef.value })">
+    <i pButtonIcon class="pi pi-check"></i>
+  </button>
+  <button pButton (click)="onClose()">
+    <i pButtonIcon class="pi pi-times"></i>
+  </button>
+  }
+</div>

@@ -1,0 +1,37 @@
+<div class="card">
+  <p-table
+    [value]="data() ?? []"
+    [tableStyle]="{ 'min-width': '70rem' }"
+    [selectionMode]="selectable() ? 'single' : null"
+    (onRowSelect)="onSelect($event)"
+    [rows]="15"
+    [paginator]="true"
+    [rowHover]="true"
+    stripedRows
+  >
+    <ng-template #header>
+      <tr>
+        @for(column of columns(); track column.field) { @if(column.allowSort) {
+        <th [pSortableColumn]="column.field" style="min-width: 15rem">
+          <div>
+            {{ column.header }}
+            <p-columnFilter display="menu" [type]="column.type ?? ''" [field]="column.field" />
+            <p-sortIcon [field]="column.field" />
+          </div>
+        </th>
+        } @else {
+        <th>{{ column.header }}</th>
+        } }
+      </tr>
+    </ng-template>
+    <ng-template #body let-rowData>
+      <tr [pSelectableRow]="rowData">
+        @for(column of columns(); track column.field) {
+        <td>
+          {{ rowData[column.field] }}
+        </td>
+        }
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
