@@ -17,6 +17,7 @@ class ListingIn(BaseModel):
     floor: str
     num_of_floors: str 
     build_year: str
+    price_per_area: float
 
 class ListingDB(ListingIn):
     id: UUID4

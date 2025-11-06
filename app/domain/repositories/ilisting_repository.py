@@ -6,6 +6,7 @@ from sqlalchemy import Select
 
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
+from app.domain.models.listing_update import ListingUpdate
 
 
 class IListingRepository(ABC):
@@ -28,4 +29,8 @@ class IListingRepository(ABC):
 
     @abstractmethod
     async def get_single_listing(self, listing_id: UUID4) -> ListingDB | None:
+        """abstract method"""
+
+    @abstractmethod
+    async def patch_listing(self, listing_id: UUID4, listing: ListingUpdate) -> ListingDB:
         """abstract method"""

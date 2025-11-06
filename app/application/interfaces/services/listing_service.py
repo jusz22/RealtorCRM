@@ -10,6 +10,7 @@ from app.domain.repositories.ilisting_repository import IListingRepository
 from app.infrastructure.models.listing_model import Listing
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
+from app.domain.models.listing_update import ListingUpdate
 
 
 class ListingService(IListingService):
@@ -48,3 +49,6 @@ class ListingService(IListingService):
 
     async def get_single_listing(self, listing_id: UUID4) -> ListingDB | None:
         return await self._repository.get_single_listing(listing_id=listing_id)
+    
+    async def patch_listing(self, listing_id: UUID4, listing: ListingUpdate) -> ListingDB:
+        return await self._repository.patch_listing(listing_id, listing)

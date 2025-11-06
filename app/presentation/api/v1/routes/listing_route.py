@@ -1,7 +1,7 @@
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from typing import Annotated, Dict, Iterable, List
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, UploadFile, Path
 from dependency_injector.wiring import inject, Provide
 from pydantic import UUID4
 from app.application.interfaces.ilisting_service import IListingService
@@ -12,6 +12,7 @@ from app.infrastructure.const import OPERATORS
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.infrastructure.security import verify_token
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
+from app.domain.models.listing_update import ListingUpdate
 
 router = APIRouter(dependencies=[Depends(verify_token)])
 
@@ -101,3 +102,15 @@ async def get_single_listing(
     if listing is None:
         raise HTTPException(status_code=404, detail=f"No listing of id {listing_id} was found")
     return listing
+
+@router.patch("/listings/{listing_id}", response_model=ListingDB)
+@inject
+async def patch_listing(
+    listing_id: UUID4 = Path(..., description="Listing ID"),
+    listing: ListingUpdate = Body(...),
+    service: IListingService = Depends(Provide[Container.listing_service])
+):
+    updated = await service.patch_listing(listing_id, listing)
+    if not updated:
+        raise HTTPException(status_code=404, detail=f"No listing of id {listing_id} was found")
+    return updated

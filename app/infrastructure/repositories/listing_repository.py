@@ -1,13 +1,14 @@
 from typing import Iterable, List
 
 from pydantic import UUID4
-from sqlalchemy import Select, delete, select
+from sqlalchemy import Select, delete, select, update
 from app.domain.repositories.ilisting_repository import IListingRepository
 from  sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.models.listing_model import Listing
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
+from app.domain.models.listing_update import ListingUpdate
 
 class ListingRepository(IListingRepository):
     
@@ -50,3 +51,18 @@ class ListingRepository(IListingRepository):
             await session.execute(delete(Listing).where(Listing.id==listing_id))
             await session.commit()
             return listing
+
+    async def patch_listing(self, listing_id: UUID4, listing_update: ListingUpdate) -> ListingDB | None:
+        async with self._session as session:
+            # Prepare only the fields that are set
+            update_data = listing_update.model_dump(exclude_unset=True)
+            if not update_data:
+                return None
+            # Perform the update
+            await session.execute(
+                update(Listing)
+                .where(Listing.id == listing_id)
+                .values(**update_data)
+            )
+            await session.commit()
+            return await self.get_single_listing(listing_id)
