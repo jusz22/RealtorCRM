@@ -20,7 +20,9 @@ export class AuthService {
         },
       })
       .subscribe({
-        next: (res) => this.saveToken(res),
+        next(res) {
+          AuthService.saveToken(res);
+        },
         error: (err: HttpErrorResponse) => {
           if (err.status === 401) {
             return { error: 'Wrong login or password' };
@@ -38,10 +40,14 @@ export class AuthService {
     return false;
   }
 
-  private saveToken(token: Token) {
+  static saveToken(token: Token) {
     const expiresAt = JSON.parse(atob(token.access_token.split('.')[1])).exp;
 
     localStorage.setItem('token', JSON.stringify(token.access_token));
     localStorage.setItem('token_expires', expiresAt);
+  }
+
+  getAuthToken() {
+    return JSON.parse(localStorage.getItem('token') || '""');
   }
 }
