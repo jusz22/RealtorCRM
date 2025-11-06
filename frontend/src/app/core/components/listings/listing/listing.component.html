@@ -1,0 +1,5 @@
+<p>{{ listingId() }}</p>
+<sha-editable-field
+  [data]="{ key: 'street', value: listingData()?.street ?? '' }"
+  (updateField)="updateField($event)"
+/>
