@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ListingService } from './listing.service';
 import { Listing } from '../listing.model';
-import { EditableFieldComponent } from '../../../../shared/components/editable-data/editable-field.component';
+import { EditableFieldComponent } from '../../../../shared/components/editable-field/editable-field.component';
 
 @Component({
   templateUrl: './listing.component.html',
