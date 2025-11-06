@@ -1,3 +1,1 @@
-@for(item of clients; track item.id){
-<p>{{ item.fullName }}</p>
-}
+<sha-table [columns]="columns" [data]="(clients$ | async) ?? []" [selectable]="true" />

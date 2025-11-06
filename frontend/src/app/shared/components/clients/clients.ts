@@ -1,18 +1,31 @@
 import { Component, inject } from '@angular/core';
-import { ClientsService } from '../../../core/services/clients.service';
+import { ClientService } from '../../../core/services/clients.service';
 import { AsyncPipe } from '@angular/common';
-import { map, pipe } from 'rxjs';
-import { Clients } from '../../../core/services/clients.model';
+import { Column, TableComponent } from '../table/table.component';
 
 @Component({
   templateUrl: './clients.html',
   styleUrl: './clients.css',
-  imports: [],
+  imports: [AsyncPipe, TableComponent],
 })
 export class ClientsComponent {
-  clientService = inject(ClientsService);
-  clients: Clients[] = [];
-  readonly clients$ = this.clientService.getClients().subscribe({
-    next: (res) => console.log(res),
-  });
+  clientService = inject(ClientService);
+  readonly clients$ = this.clientService.getClients();
+  readonly columns: Column[] = [
+    {
+      field: 'full_name',
+      header: 'Full name',
+      allowSort: true,
+    },
+    {
+      field: 'email',
+      header: 'Email',
+      allowSort: true,
+    },
+    {
+      field: 'phone_number',
+      header: 'Phone number',
+      allowSort: false,
+    },
+  ];
 }
