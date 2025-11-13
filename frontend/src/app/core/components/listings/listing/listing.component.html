@@ -1,5 +1,12 @@
 <p>{{ listingId() }}</p>
-<sha-editable-field
-  [data]="{ key: 'street', value: listingData()?.street ?? '' }"
-  (updateField)="updateField($event)"
-/>
+<div class="gap-12 p-12">
+  <div class="bg-gray-700 rounded-3xl p-5">
+    <h2 class="font-bold text-xl">Informacje podstawowe:</h2>
+
+    <div class="flex flex-wrap justify-between p-12">
+      @for (field of listingData() | keyvalue; track field) {
+      <sha-editable-field [data]="field" (updateField)="updateField($event)" />
+      }
+    </div>
+  </div>
+</div>

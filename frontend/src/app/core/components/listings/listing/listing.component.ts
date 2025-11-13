@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { ListingService } from './listing.service';
 import { Listing } from '../listing.model';
 import { EditableFieldComponent } from '../../../../shared/components/editable-field/editable-field.component';
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   templateUrl: './listing.component.html',
-  imports: [EditableFieldComponent],
+  imports: [EditableFieldComponent, KeyValuePipe],
   selector: 'app-listing',
 })
 export class ListingComponent implements OnInit {
