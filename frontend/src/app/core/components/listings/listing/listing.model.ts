@@ -17,8 +17,8 @@ export interface Listing {
 }
 
 enum transactionType {
-  sell,
-  rent,
+  sell = 'Sell',
+  rent = 'Rent',
 }
 
 enum propertyType {

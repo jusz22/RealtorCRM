@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Listing } from './listing.model';
+import { Listing } from './listing/listing.model';
 
 @Injectable({ providedIn: 'root' })
 export class ListingsService {

@@ -1,11 +1,11 @@
 <p>{{ listingId() }}</p>
-<div class="gap-12 p-12">
+<div class="p-4 md:w-1/2">
   <div class="bg-gray-700 rounded-3xl p-5">
     <h2 class="font-bold text-xl">Informacje podstawowe:</h2>
 
-    <div class="flex flex-wrap justify-between p-12">
-      @for (field of listingData() | keyvalue; track field) {
-      <sha-editable-field [data]="field" (updateField)="updateField($event)" />
+    <div class="flex flex-wrap justify-evenly">
+      @for (field of displayListingData(); track field) {
+      <sha-editable-field class="mx-auto" [data]="field" (updateField)="updateField($event)" />
       }
     </div>
   </div>

@@ -4,6 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { Column, TableComponent } from '../table/table.component';
 
 @Component({
+  selector: 'app-clients',
   templateUrl: './clients.html',
   styleUrl: './clients.css',
   imports: [AsyncPipe, TableComponent],
