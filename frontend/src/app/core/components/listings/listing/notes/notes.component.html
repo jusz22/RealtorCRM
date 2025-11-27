@@ -1,0 +1,28 @@
+<div class="flex flex-col p-4">
+  @for(note of notes(); track note.id) {
+  <app-note [note]="note" (onDelete)="onDelete($event)" (onEdit)="onEdit($event)" />
+  }
+</div>
+<p-dialog [(visible)]="showingEditDialog" header="Edit a note" [resizable]="false">
+  @if(formGroup) {
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col justify-center gap-4 mb-4">
+      <label>Note</label>
+      <textarea formControlName="note" pTextarea rows="5" cols="50" [autoResize]="true"></textarea>
+      @if(formGroup.invalid) {
+      <p-message severity="error" variant="simple" size="small">Note cannot be empty!</p-message>
+      }
+    </div>
+    <div class="flex justify-center gap-3">
+      <button type="submit" pButton label="Save"></button>
+      <button
+        type="button"
+        pButton
+        label="Cancel"
+        (click)="onCancelEdit()"
+        severity="danger"
+      ></button>
+    </div>
+  </form>
+  }
+</p-dialog>
