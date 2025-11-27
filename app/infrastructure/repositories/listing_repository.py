@@ -2,67 +2,67 @@ from typing import Iterable, List
 
 from pydantic import UUID4
 from sqlalchemy import Select, delete, select, update
-from app.domain.repositories.ilisting_repository import IListingRepository
-from  sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.domain.models.listing_update import ListingUpdate
+from app.domain.repositories.ilisting_repository import IListingRepository
 from app.infrastructure.models.listing_model import Listing
 from app.infrastructure.models.listing_photo_model import ListingPhoto
 from app.presentation.schemas.listing_schema import ListingDB, ListingIn
-from app.domain.models.listing_update import ListingUpdate
+
 
 class ListingRepository(IListingRepository):
-    
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session) -> None:
         self._session = session
 
     async def save_photos(self, photos: List[ListingPhoto]) -> None:
-        async with self._session as session:
+        async with self._session() as session:
             session.add_all(photos)
             await session.commit()
 
     async def save_listing(self, listings: Iterable[ListingIn]):
-
         db_listing = [Listing(**listing.model_dump()) for listing in listings]
 
-        async with self._session as session:
+        async with self._session() as session:
             session.add_all(db_listing)
             await session.commit()
 
     async def get_listings(self, query: Select) -> Iterable[ListingDB]:
-        async with self._session as session:
+        async with self._session() as session:
             result = await session.execute(query)
             listings = result.scalars().all()
-        return [ListingDB.model_validate(listing) for listing in listings]
-    
+            return [ListingDB.model_validate(listing) for listing in listings]
+
     async def get_single_listing(self, listing_id) -> ListingDB | None:
-        async with self._session as session:
-            result = await session.execute(select(Listing).where(Listing.id == listing_id))
+        async with self._session() as session:
+            result = await session.execute(
+                select(Listing).where(Listing.id == listing_id)
+            )
             listing = result.scalars().one_or_none()
-        return ListingDB.model_validate(listing) if listing is not None else None
-    
+            return ListingDB.model_validate(listing) if listing is not None else None
+
     async def delete_listing(self, listing_id: UUID4) -> ListingDB | None:
-        
-        async with self._session as session:
+        async with self._session() as session:
             listing = await self.get_single_listing(lisitng_id=listing_id)
 
             if not listing:
                 return None
-            
-            await session.execute(delete(Listing).where(Listing.id==listing_id))
+
+            await session.execute(delete(Listing).where(Listing.id == listing_id))
             await session.commit()
             return listing
 
-    async def patch_listing(self, listing_id: UUID4, listing_update: ListingUpdate) -> ListingDB | None:
-        async with self._session as session:
+    async def patch_listing(
+        self, listing_id: UUID4, listing_update: ListingUpdate
+    ) -> ListingDB | None:
+        async with self._session() as session:
             # Prepare only the fields that are set
             update_data = listing_update.model_dump(exclude_unset=True)
             if not update_data:
                 return None
             # Perform the update
             await session.execute(
-                update(Listing)
-                .where(Listing.id == listing_id)
-                .values(**update_data)
+                update(Listing).where(Listing.id == listing_id).values(**update_data)
             )
             await session.commit()
             return await self.get_single_listing(listing_id)
