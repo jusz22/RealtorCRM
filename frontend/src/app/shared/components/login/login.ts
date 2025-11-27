@@ -7,6 +7,8 @@ import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { MessageModule } from 'primeng/message';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CardModule } from 'primeng/card';
 
 @Component({
   imports: [
@@ -16,6 +18,7 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     IftaLabelModule,
     MessageModule,
+    CardModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.css',
@@ -35,8 +38,19 @@ export class Login {
     const val = this.loginForm.value;
     if (this.loginForm.invalid) return;
     if (val.username && val.password) {
-      const error = this.authService.login(val.username, val.password);
+      this.authService.login(val.username, val.password).subscribe({
+        next: (res) => {
+          this.authService.saveToken(res);
+          this.router.navigate(['/']);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            return { error: 'Wrong login or password' };
+          }
+          if (err.status && err.status !== 401) return { error: 'Error' };
+          return;
+        },
+      });
     }
-    this.router.navigate(['/']);
   }
 }

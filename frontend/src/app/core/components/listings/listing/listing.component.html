@@ -1,12 +1,23 @@
-<p>{{ listingId() }}</p>
-<div class="p-4 md:w-1/2">
-  <div class="bg-gray-700 rounded-3xl p-5">
-    <h2 class="font-bold text-xl">Informacje podstawowe:</h2>
+<div class="p-4 flex flex-col items-start md:flex-row gap-3">
+  <div class="bg-(--p-surface-700) rounded-3xl p-2 md:w-1/2 min-w-xl min-h-1/6">
+    <h2 class="font-bold text-xl m-4">Informacje podstawowe:</h2>
 
-    <div class="flex flex-wrap justify-evenly">
+    <div class="flex flex-wrap justify-evenly gap-2">
       @for (field of displayListingData(); track field) {
       <sha-editable-field class="mx-auto" [data]="field" (updateField)="updateField($event)" />
       }
+    </div>
+  </div>
+  <div class="bg-(--p-surface-700) rounded-3xl md:w-1/2 min-w-xl p-5">
+    <div class="bg-(--p-surface-900)">
+      <p-galleria [value]="image" [showThumbnails]="true">
+        <ng-template #item let-item>
+          <img [src]="item.source" class="max-h-96" />
+        </ng-template>
+        <ng-template #thumbnail let-item>
+          <img [src]="item.thumbnail" class="max-h-16" />
+        </ng-template>
+      </p-galleria>
     </div>
   </div>
 </div>

@@ -14,9 +14,9 @@ export const authGuard: CanActivateFn = (
 ) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const isAuthenticated = authService.isAuthenticated();
+  const isAuthenticated = authService.isAuthenticated;
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated()) {
     return new RedirectCommand(router.parseUrl('/login'));
   }
 

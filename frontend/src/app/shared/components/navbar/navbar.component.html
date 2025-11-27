@@ -1,1 +1,140 @@
-<p-menubar [model]="items" />
+<p-menubar [model]="items">
+  <ng-template #end>
+    <div class="flex flex-row gap-x-2">
+      <p-popover #op>
+        <ng-template #content>
+          <h2
+            class="text-md p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg cursor-pointer"
+            (click)="onAddListing()"
+          >
+            Add listing
+          </h2>
+        </ng-template>
+      </p-popover>
+      <button pButton (click)="op.toggle($event)">
+        <span class="pi pi-plus"></span>
+      </button>
+      @if (isSignedIn()) {
+      <button (click)="onSignOut()" pButton label="Sign out" icon="pi pi-sign-out"></button>
+      } @else {
+      <a routerLink="/login">
+        <button pButton label="Sign in" icon="pi pi-sign-in"></button>
+      </a>
+      }
+    </div>
+  </ng-template>
+</p-menubar>
+<p-dialog
+  [(visible)]="showingDialog"
+  header="Add a listing"
+  [resizable]="false"
+  [focusOnShow]="false"
+  [modal]="true"
+  [maximizable]="false"
+  styleClass="w-full md:w-3/4 lg:w-2/3"
+  contentStyleClass="max-h-none"
+>
+  @if(formGroup) {
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="col-span-2">
+        <label class="block text-sm font-semibold mb-2">Title</label>
+        <input pInputText formControlName="title" placeholder="Title" class="w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Location</label>
+        <input pInputText formControlName="location" placeholder="Location" class="w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Street</label>
+        <input pInputText formControlName="street" placeholder="Street" class="w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Price</label>
+        <input
+          pInputText
+          formControlName="price"
+          placeholder="Price"
+          type="number"
+          class="w-full"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Area (m²)</label>
+        <input pInputText formControlName="area" placeholder="Area" type="number" class="w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Floor</label>
+        <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Number of Floors</label>
+        <input
+          pInputText
+          formControlName="numOfFloors"
+          placeholder="Number of floors"
+          class="w-full"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Year Built</label>
+        <p-datepicker
+          view="year"
+          dateFormat="yy"
+          formControlName="buildYear"
+          [autofocus]="false"
+          showIcon
+          class="w-full"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Property Type</label>
+        <p-select
+          formControlName="propertyType"
+          [options]="propertyOptions"
+          placeholder="Property type"
+          [autofocus]="false"
+          class="w-full"
+        ></p-select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold mb-2">Transaction Type</label>
+        <p-select
+          formControlName="transactionType"
+          [options]="transactionOptions"
+          placeholder="Transaction type"
+          [autofocus]="false"
+          class="w-full"
+        ></p-select>
+      </div>
+
+      <div class="col-span-2">
+        <label class="block text-sm font-semibold mb-2">Description</label>
+        <textarea
+          formControlName="description"
+          placeholder="Description"
+          pTextarea
+          rows="4"
+          class="w-full"
+          [autoResize]="true"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-3 pt-4 border-t">
+      <button type="submit" pButton label="Save"></button>
+      <button type="button" pButton label="Cancel" (click)="onCancel()" severity="danger"></button>
+      <button type="reset" pButton label="Reset" severity="secondary"></button>
+    </div>
+  </form>
+  }
+</p-dialog>

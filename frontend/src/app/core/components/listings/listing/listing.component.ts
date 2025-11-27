@@ -1,22 +1,32 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, model, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ListingService } from './listing.service';
 import { Listing } from './listing.model';
 import { EditableFieldComponent } from '../../../../shared/components/editable-field/editable-field.component';
+import { GalleriaModule } from 'primeng/galleria';
 
 @Component({
   templateUrl: './listing.component.html',
-  imports: [EditableFieldComponent],
+  imports: [EditableFieldComponent, GalleriaModule],
   selector: 'app-listing',
 })
 export class ListingComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
-  private listingService = inject(ListingService);
-  protected listingId = signal('');
-  protected listingData = signal<Listing | null>(null);
-  protected displayListingData = signal<
+  private readonly listingService = inject(ListingService);
+  protected readonly listingId = signal('');
+  protected readonly listingData = signal<Listing | null>(null);
+  protected readonly displayListingData = signal<
     Array<{ label: string; value: any; type: string; key: string }>
   >([]);
+  protected image = [
+    {
+      source:
+        'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      thumbnail:
+        'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+      alt: 'aa',
+    },
+  ];
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
@@ -26,11 +36,11 @@ export class ListingComponent implements OnInit {
         if (this.listingData()) {
           this.displayListingData.set(this.prepareData(this.listingData()!));
         }
-
-        console.log(this.displayListingData());
       });
     });
+    this.listingService.getImageMetadata().subscribe((metadata) => {});
   }
+
   prepareData(data: Listing) {
     const preparedData = Object.entries(data)
       .map(([key, value]) => ({
@@ -45,6 +55,7 @@ export class ListingComponent implements OnInit {
       .filter((val) => val.key !== 'id' && val.key !== 'client_id');
     return preparedData;
   }
+
   updateField(event: any) {
     console.log('dsada');
 
