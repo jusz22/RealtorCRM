@@ -1,9 +1,9 @@
 <div class="flex flex-col gap-0.5 w-96">
-  <label class="pl-1" [for]="data().label">{{ data().label }}:</label>
+  <label class="pl-1 text-sm" [for]="data().label">{{ data().label }}:</label>
   <div class="flex gap-1 w-full relative">
     <input
       [id]="data().label"
-      class="read-only:bg-[#18181b] rounded p-2 pl-3 pr-2 border flex-1 items-center w-full h-9"
+      class="read-only:bg-(--p-surface-900) bg-(--p-surface-500) rounded p-2 pl-3 pr-19 border flex-1 items-center w-full h-9"
       [(ngModel)]="inputValue"
       [readonly]="!editMode()"
       (pointerdown)="onClickInput()"
@@ -18,8 +18,8 @@
         (pointerdown)="onSave()"
         class="pointer-events-auto rounded-full bg-green-600 w-7 h-7 flex justify-center items-center hover:bg-green-900 hover:cursor-pointer"
       >
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" />
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8l3 3 7-7" stroke="currentColor" stroke-width="2" fill="none" />
         </svg>
       </button>
       <button

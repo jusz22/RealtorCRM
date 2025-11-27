@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
-import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule, TableRowSelectEvent } from 'primeng/table';
 
 export interface Column {

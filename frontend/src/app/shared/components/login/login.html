@@ -1,24 +1,48 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <div class="flex flex-col p-2">
-    <p-iftalabel>
-      <input type="text" pInputText formControlName="username" />
-      <label for="username">Username</label>
-      @if(loginForm.controls.username.invalid){
-      <p-message severity="error" size="small" variant="simple">Provide a username</p-message>
-      }
-    </p-iftalabel>
-    <div>
-      <p-iftalabel>
-        <p-password formControlName="password" inputId="password" [feedback]="false" />
+<!-- <div class="flex flex-col p-2 my-20"> -->
+<div class="flex justify-center dark:bg-[#121212] py-20">
+  <div class="w-full max-w-md dark:bg-[#1E1E1E] p-8 rounded-2xl shadow-2xl border border-white/10">
+    <div class="flex flex-col items-center w-full mb-8">
+      <h1 class="text-3xl font-bold text-black dark:text-white tracking-tight">Sign In</h1>
+      <div class="w-16 h-1 bg-primary-500 rounded mt-2"></div>
+      <p class="text-gray-500 mt-3">Welcome back — log in to continue</p>
+    </div>
+    <form
+      class="mx-auto flex flex-col gap-4 min-w-1/5 items-center"
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <p-iftalabel class="w-full">
+        <input
+          type="text"
+          pInputText
+          formControlName="username"
+          name="username"
+          autocomplete="username"
+          fluid
+        />
+        <label for="username">Username</label>
+        @if(loginForm.controls.username.invalid && loginForm.controls.username.touched){
+        <p-message severity="error" size="small" variant="simple">Provide a username</p-message>
+        }
+      </p-iftalabel>
+      <p-iftalabel class="w-full">
+        <p-password
+          formControlName="password"
+          name="password"
+          inputId="password"
+          [feedback]="false"
+          autocomplete="current-password"
+          fluid
+        />
         <label for="password">Password</label>
-        @if(loginForm.controls.password.invalid){
+        @if(loginForm.controls.password.invalid && loginForm.controls.password.touched){
         <p-message severity="error" size="small" variant="simple">Provide a password</p-message>
         }
       </p-iftalabel>
-    </div>
 
-    <button class="w-md" pButton type="submit">
-      <span pButtonLabel>Log In</span>
-    </button>
+      <button class="w-full" pButton type="submit">
+        <span pButtonLabel>Log In</span>
+      </button>
+    </form>
   </div>
-</form>
+</div>

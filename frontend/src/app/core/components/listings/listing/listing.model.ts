@@ -16,12 +16,27 @@ export interface Listing {
   created_at: Date;
 }
 
-enum transactionType {
+export interface ListingInput {
+  client_id: string;
+  title: string;
+  location: string;
+  street: string;
+  price: number;
+  area: number;
+  property_type: propertyType;
+  description: string;
+  transaction_type: transactionType;
+  floor: string;
+  num_of_floors: string;
+  build_year: string;
+}
+
+export enum transactionType {
   sell = 'Sell',
   rent = 'Rent',
 }
 
-enum propertyType {
-  House,
-  Flat,
+export enum propertyType {
+  house = 'House',
+  flat = 'Flat',
 }
