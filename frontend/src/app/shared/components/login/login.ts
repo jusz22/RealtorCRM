@@ -30,12 +30,13 @@ export class Login {
   private router = inject(Router);
 
   onSubmit() {
+    console.log('login');
+    
     const val = this.loginForm.value;
     if (this.loginForm.invalid) return;
     if (val.username && val.password) {
       const error = this.authService.login(val.username, val.password);
     }
-    this.loginForm.reset();
     this.router.navigate(['/']);
   }
 }
