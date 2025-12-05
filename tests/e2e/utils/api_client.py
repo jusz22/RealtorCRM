@@ -67,6 +67,31 @@ class ApiClient:
         )
         return response.json()[0]
 
+    def list_listings(
+        self,
+        token: str,
+        *,
+        sort_by: str | None = None,
+        sort_order: str | None = None,
+        filter: str | None = None,
+    ) -> List[Dict[str, Any]]:
+        params: Dict[str, Any] = {}
+        if sort_by:
+            params["sort_by"] = sort_by
+        if sort_order:
+            params["sort_order"] = sort_order
+        if filter:
+            params["filter"] = filter
+
+        response = self.session.get(
+            f"{self.base_url}/listings",
+            headers=self._auth_headers(token),
+            params=params or None,
+            timeout=DEFAULT_TIMEOUT,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def get_listing(self, token: str, listing_id: str) -> Dict[str, Any]:
         response = self.session.get(
             f"{self.base_url}/listings/{listing_id}",

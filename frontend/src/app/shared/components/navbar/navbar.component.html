@@ -4,15 +4,17 @@
       @if (isSignedIn()) {
       <p-popover #op>
         <ng-template #content>
-          <h2
+          <button
+            type="button"
             class="text-md p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg cursor-pointer"
             (click)="onAddListing()"
+            data-testid="add-listing-action"
           >
             Add listing
-          </h2>
+          </button>
         </ng-template>
       </p-popover>
-      <button pButton (click)="op.toggle($event)">
+      <button pButton type="button" (click)="op.toggle($event)" data-testid="add-listing-menu-button">
         <span class="pi pi-plus"></span>
       </button>
       } @if (isSignedIn()) {
@@ -40,17 +42,35 @@
     <div class="grid grid-cols-2 gap-4 mb-6">
       <div class="col-span-2">
         <label class="block text-sm font-semibold mb-2">Title</label>
-        <input pInputText formControlName="title" placeholder="Title" class="w-full" />
+        <input
+          pInputText
+          formControlName="title"
+          placeholder="Title"
+          class="w-full"
+          data-testid="add-listing-title"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-semibold mb-2">Location</label>
-        <input pInputText formControlName="location" placeholder="Location" class="w-full" />
+        <input
+          pInputText
+          formControlName="location"
+          placeholder="Location"
+          class="w-full"
+          data-testid="add-listing-location"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-semibold mb-2">Street</label>
-        <input pInputText formControlName="street" placeholder="Street" class="w-full" />
+        <input
+          pInputText
+          formControlName="street"
+          placeholder="Street"
+          class="w-full"
+          data-testid="add-listing-street"
+        />
       </div>
 
       <div>
@@ -61,17 +81,31 @@
           placeholder="Price"
           type="number"
           class="w-full"
+          data-testid="add-listing-price"
         />
       </div>
 
       <div>
         <label class="block text-sm font-semibold mb-2">Area (m²)</label>
-        <input pInputText formControlName="area" placeholder="Area" type="number" class="w-full" />
+        <input
+          pInputText
+          formControlName="area"
+          placeholder="Area"
+          type="number"
+          class="w-full"
+          data-testid="add-listing-area"
+        />
       </div>
 
       <div>
         <label class="block text-sm font-semibold mb-2">Floor</label>
-        <input pInputText formControlName="floor" placeholder="Floor" class="w-full" />
+        <input
+          pInputText
+          formControlName="floor"
+          placeholder="Floor"
+          class="w-full"
+          data-testid="add-listing-floor"
+        />
       </div>
 
       <div>
@@ -81,12 +115,14 @@
           formControlName="num_of_floors"
           placeholder="Number of floors"
           class="w-full"
+          data-testid="add-listing-num-of-floors"
         />
       </div>
 
       <div>
         <label class="block text-sm font-semibold mb-2">Year Built</label>
         <p-datepicker
+          data-testid="add-listing-build-year"
           view="year"
           dateFormat="yy"
           formControlName="build_year"
@@ -104,6 +140,7 @@
           placeholder="Property type"
           [autofocus]="false"
           class="w-full"
+          data-testid="add-listing-property-type"
         ></p-select>
       </div>
 
@@ -115,6 +152,7 @@
           placeholder="Transaction type"
           [autofocus]="false"
           class="w-full"
+          data-testid="add-listing-transaction-type"
         ></p-select>
       </div>
 
@@ -140,13 +178,21 @@
           rows="4"
           class="w-full"
           [autoResize]="true"
+          data-testid="add-listing-description"
         ></textarea>
       </div>
     </div>
 
     <div class="flex justify-center gap-3 pt-4 border-t">
-      <button type="submit" pButton label="Save"></button>
-      <button type="button" pButton label="Cancel" (click)="onCancel()" severity="danger"></button>
+      <button type="submit" pButton label="Save" data-testid="add-listing-save"></button>
+      <button
+        type="button"
+        pButton
+        label="Cancel"
+        (click)="onCancel()"
+        severity="danger"
+        data-testid="add-listing-cancel"
+      ></button>
       <button type="reset" pButton label="Reset" severity="secondary"></button>
     </div>
   </form>
