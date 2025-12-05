@@ -38,5 +38,5 @@ export enum transactionType {
 
 export enum propertyType {
   house = 'House',
-  flat = 'Flat',
+  apartment = 'Apartment',
 }
