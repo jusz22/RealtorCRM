@@ -44,15 +44,13 @@ class ApiClient:
     def create_listing(self, token: str, **overrides: Any) -> Dict[str, Any]:
         payload = {
             "client_id": overrides.get("client_id"),
-            "title": overrides.get("title", f"{uuid.uuid4().hex[:8]}"),
-            "location": overrides.get("location", "Automation City"),
-            "street": overrides.get("street", "123 Testing Ave"),
+            "title": overrides.get("title", f"{uuid.uuid1().hex[:8]}"),
+            "location": overrides.get("location", "Test City"),
+            "street": overrides.get("street", "123 Ave"),
             "price": overrides.get("price", 350000),
             "area": overrides.get("area", 120),
             "property_type": overrides.get("property_type", "House"),
-            "description": overrides.get(
-                "description", "Listing created by Selenium end-to-end tests."
-            ),
+            "description": overrides.get("description", "Test listing."),
             "transaction_type": overrides.get("transaction_type", "Sell"),
             "floor": overrides.get("floor", "1"),
             "num_of_floors": overrides.get("num_of_floors", "2"),

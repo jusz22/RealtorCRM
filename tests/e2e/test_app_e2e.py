@@ -89,7 +89,7 @@ def test_user_can_edit_listing_field(
     driver: Chrome,
     frontend_base_url: str,
     register_user: dict,
-    listing_factory: Callable[..., dict],
+    listing_factory,
     api_client: ApiClient,
     api_token: str,
 ) -> None:
