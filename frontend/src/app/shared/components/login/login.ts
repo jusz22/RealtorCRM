@@ -33,6 +33,8 @@ export class Login {
   private router = inject(Router);
 
   onSubmit() {
+    console.log('login');
+    
     const val = this.loginForm.value;
     if (this.loginForm.invalid) return;
     if (val.username && val.password) {
