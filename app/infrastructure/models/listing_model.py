@@ -1,6 +1,7 @@
 import datetime
 import enum
 import uuid
+from typing import Optional
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.infrastructure.models.base_model import Base
@@ -19,7 +20,11 @@ class PropertyType(enum.Enum):
 class Listing(Base):
     __tablename__ = "listings"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
-    client_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("clients.id"))
+    client_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("clients.id"),
+        nullable=True,
+    )
     title: Mapped[str] = mapped_column(unique=True)
     location: Mapped[str] = mapped_column()
     street: Mapped[str] = mapped_column()
