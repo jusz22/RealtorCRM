@@ -13,6 +13,8 @@ class AppConfig(BaseConfig):
     API_STR: str = cfg("API_STR", cast=str)
     GMAIL_GENERATED_PASSWORD: str = cfg("GMAIL_GENERATED_PASSWORD", cast=str)
     GMAIL_ADDRESS: str = cfg("GMAIL_ADDRESS", cast=str)
+    UPLOAD_DIR: str = cfg("UPLOAD_DIR", default="uploads", cast=str)
+    MAX_UPLOAD_SIZE_MB: int = cfg("MAX_UPLOAD_SIZE_MB", default=2, cast=int)
 
 
 config = AppConfig()

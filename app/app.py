@@ -9,6 +9,7 @@ from app.infrastructure.config import config
 from app.infrastructure.db import database, init_db
 from app.presentation.api.v1.routes.auth.jwt import router as jwt_router
 from app.presentation.api.v1.routes.client_router import router as client_router
+from app.presentation.api.v1.routes.photo_router import router as photo_router
 from app.presentation.api.v1.routes.graph_router import router as graph_router
 from app.presentation.api.v1.routes.listing_route import router as listing_router
 from app.presentation.api.v1.routes.note_route import router as note_router
@@ -23,7 +24,8 @@ container.wire(
         "app.presentation.api.v1.routes.listing_route",
         "app.presentation.api.v1.routes.client_router",
         "app.presentation.api.v1.routes.graph_router",
-        "app.presentation.api.v1.routes.note_route",
+    "app.presentation.api.v1.routes.note_route",
+    "app.presentation.api.v1.routes.photo_router",
     ]
 )
 
@@ -44,6 +46,7 @@ app.include_router(listing_router, prefix=config.API_STR)
 app.include_router(client_router, prefix=config.API_STR)
 app.include_router(graph_router, prefix=config.API_STR)
 app.include_router(note_router, prefix=config.API_STR)
+app.include_router(photo_router, prefix=config.API_STR)
 
 origins = ["http://localhost:4200"]
 
