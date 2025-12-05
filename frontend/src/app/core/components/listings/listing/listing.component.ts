@@ -4,6 +4,7 @@ import { ListingService } from './listing.service';
 import { Listing } from './listing.model';
 import { EditableFieldComponent } from '../../../../shared/components/editable-field/editable-field.component';
 import { GalleriaModule } from 'primeng/galleria';
+import { SafeUrl } from '@angular/platform-browser';
 
 @Component({
   templateUrl: './listing.component.html',
@@ -18,19 +19,26 @@ export class ListingComponent implements OnInit {
   protected readonly displayListingData = signal<
     Array<{ label: string; value: any; type: string; key: string }>
   >([]);
-  protected image = [
-    {
-      source:
-        'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-      thumbnail:
-        'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
-      alt: 'aa',
-    },
-  ];
+  protected images: Array<{ source: SafeUrl; thumbnail: SafeUrl }> = [];
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
       this.listingId.set(params['id']);
+      this.images = [];
+      this.listingService.getImageMetadata(this.listingId()).subscribe((metadata) => {
+        if (!metadata.length) {
+          this.images = [];
+          return;
+        }
+        metadata.forEach((item) =>
+          this.listingService.getImageUrls(item.id).subscribe({
+            next: (url) => {
+              if (!url) return;
+              this.images = [...this.images, { source: url, thumbnail: url }];
+            },
+          })
+        );
+      });
       this.listingService.getListing(this.listingId()).subscribe((data) => {
         this.listingData.set(data);
         if (this.listingData()) {
@@ -38,7 +46,6 @@ export class ListingComponent implements OnInit {
         }
       });
     });
-    this.listingService.getImageMetadata().subscribe((metadata) => {});
   }
 
   prepareData(data: Listing) {

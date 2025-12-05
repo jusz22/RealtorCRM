@@ -10,9 +10,9 @@
   </div>
   <div class="bg-(--p-surface-700) rounded-3xl md:w-1/2 min-w-xl p-5">
     <div class="bg-(--p-surface-900)">
-      <p-galleria [value]="image" [showThumbnails]="true">
+      <p-galleria [value]="images" [showThumbnails]="true">
         <ng-template #item let-item>
-          <img [src]="item.source" class="max-h-96" />
+          <img [src]="item.source" class="max-h-96 mt-4" />
         </ng-template>
         <ng-template #thumbnail let-item>
           <img [src]="item.thumbnail" class="max-h-16" />
