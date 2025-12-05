@@ -13,7 +13,7 @@ class UserRepository(IUserRepository):
         self._session = session
 
     async def get_all_users(self, query) -> Iterable[UserDB]:
-        async with self._session as session:
+        async with self._session() as session:
             result = await session.execute(query)
             users = result.scalars().all()
 
@@ -26,7 +26,7 @@ class UserRepository(IUserRepository):
             hashed_password=user.hashed_password,
         )
 
-        async with self._session as session:
+        async with self._session() as session:
             session.add(db_user)
             await session.commit()
         return UserDB.model_validate(db_user)
@@ -38,7 +38,7 @@ class UserRepository(IUserRepository):
             return UserDB.model_validate(user) if user is not None else None
 
     async def delete_user(self, user_id) -> UserDB | None:
-        async with self._session as session:
+        async with self._session() as session:
             user = await self.get_user(user_id=user_id)
             if not user:
                 return None
