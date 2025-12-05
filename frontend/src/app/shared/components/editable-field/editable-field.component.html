@@ -9,6 +9,7 @@
       (pointerdown)="onClickInput()"
       (blur)="onBlur($event)"
       [type]="data().type"
+      [attr.data-testid]="'editable-input-' + data().key"
     />
     @if (editMode()) {
     <div
@@ -17,6 +18,9 @@
       <button
         (pointerdown)="onSave()"
         class="pointer-events-auto rounded-full bg-green-600 w-7 h-7 flex justify-center items-center hover:bg-green-900 hover:cursor-pointer"
+        type="button"
+        aria-label="Save field value"
+        [attr.data-testid]="'editable-save-' + data().key"
       >
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
           <path d="M3 8l3 3 7-7" stroke="currentColor" stroke-width="2" fill="none" />
@@ -25,6 +29,9 @@
       <button
         (pointerdown)="onClose()"
         class="pointer-events-auto rounded-full bg-red-600 w-7 h-7 flex justify-center items-center hover:bg-red-900 hover:cursor-pointer"
+        type="button"
+        aria-label="Discard field changes"
+        [attr.data-testid]="'editable-cancel-' + data().key"
       >
         <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
           <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" />

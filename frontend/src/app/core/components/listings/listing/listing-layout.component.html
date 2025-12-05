@@ -14,15 +14,17 @@
   <ng-template #end>
     <p-popover #op>
       <ng-template #content>
-        <h2
+        <button
+          type="button"
           class="text-md p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg cursor-pointer"
           (click)="onAddNote()"
+          data-testid="add-note-action"
         >
           Add note
-        </h2>
+        </button>
       </ng-template>
     </p-popover>
-    <button pButton (click)="op.toggle($event)">
+    <button pButton type="button" (click)="op.toggle($event)" data-testid="add-note-menu-button">
       <span class="pi pi-plus"></span>
     </button>
   </ng-template>
@@ -32,11 +34,25 @@
   <form [formGroup]="fg" (ngSubmit)="onSubmit()">
     <div class="flex flex-col justify-center gap-4 mb-4">
       <label>Note</label>
-      <textarea formControlName="note" pTextarea rows="5" cols="50" [autoResize]="true"></textarea>
+      <textarea
+        formControlName="note"
+        pTextarea
+        rows="5"
+        cols="50"
+        [autoResize]="true"
+        data-testid="note-textarea"
+      ></textarea>
     </div>
     <div class="flex justify-center gap-3">
-      <button type="submit" pButton label="Save"></button>
-      <button type="button" pButton label="Cancel" (click)="onCancel()" severity="danger"></button>
+      <button type="submit" pButton label="Save" data-testid="note-save-button"></button>
+      <button
+        type="button"
+        pButton
+        label="Cancel"
+        (click)="onCancel()"
+        severity="danger"
+        data-testid="note-cancel-button"
+      ></button>
     </div>
   </form>
   }
