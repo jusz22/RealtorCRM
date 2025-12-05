@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Signal } from '@angular/core';
+import { Component, inject, OnInit, Signal, ViewChild } from '@angular/core';
 import { MenuItem, PrimeIcons } from 'primeng/api';
 import { Menubar } from 'primeng/menubar';
 import { ButtonDirective } from 'primeng/button';
@@ -16,11 +16,14 @@ import {
 import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import {
+  Listing,
   propertyType,
   transactionType,
 } from '../../../core/components/listings/listing/listing.model';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
+import { FileUpload, FileUploadHandlerEvent } from 'primeng/fileupload';
+import { ListingService } from '../../../core/components/listings/listing/listing.service';
 
 @Component({
   selector: 'app-navbar',
@@ -36,19 +39,23 @@ import { DatePickerModule } from 'primeng/datepicker';
     Select,
     InputTextModule,
     DatePickerModule,
+    FileUpload,
   ],
   templateUrl: './navbar.component.html',
   standalone: true,
 })
 export class NavbarComponent implements OnInit {
   protected items: MenuItem[] | undefined;
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
+  private readonly listingService = inject(ListingService);
   private router = inject(Router);
   isSignedIn: Signal<boolean> = this.authService.isAuthenticated;
   protected showingDialog = false;
   protected formGroup!: FormGroup;
   protected propertyOptions = Object.values(propertyType);
   protected transactionOptions = Object.values(transactionType);
+  protected lastSubmitResponse: Listing[] | null = null;
+  @ViewChild('fu') fileUpload!: FileUpload;
 
   ngOnInit() {
     this.items = [
@@ -73,16 +80,17 @@ export class NavbarComponent implements OnInit {
       title: new FormControl('', Validators.required),
       street: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
-      numOfFloors: new FormControl('', Validators.required),
+      num_of_floors: new FormControl('', Validators.required),
       description: new FormControl('', Validators.required),
       price: new FormControl('', Validators.required),
       area: new FormControl('', Validators.required),
       floor: new FormControl('', Validators.required),
-      propertyType: new FormControl('', Validators.required),
-      transactionType: new FormControl('', Validators.required),
-      buildYear: new FormControl(null),
+      property_type: new FormControl('', Validators.required),
+      transaction_type: new FormControl('', Validators.required),
+      build_year: new FormControl(null, Validators.required),
     });
   }
+
   onSignOut() {
     this.authService.deleteToken();
     this.router.navigate(['/login']);
@@ -91,8 +99,37 @@ export class NavbarComponent implements OnInit {
   onAddListing() {
     this.showingDialog = true;
   }
+
   onSubmit() {
-    console.log(this.formGroup.value);
+    if (this.formGroup.invalid) {
+      return;
+    }
+
+    this.listingService.addListing(this.formGroup.value).subscribe({
+      next: (res) => {
+        this.showingDialog = false;
+        this.formGroup.reset();
+        this.lastSubmitResponse = res;
+        this.fileUpload.uploader();
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
-  onCancel() {}
+
+  onUpload(event: FileUploadHandlerEvent) {
+    if (!this.lastSubmitResponse) {
+      return;
+    }
+
+    this.listingService.uploadPhotos(this.lastSubmitResponse[0].id, event.files).subscribe({
+      next: (res) => console.log(res),
+      error: () => console.log('Error uplading photos'),
+    });
+  }
+
+  onCancel() {
+    this.showingDialog = false;
+  }
 }

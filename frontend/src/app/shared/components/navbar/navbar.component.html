@@ -1,6 +1,7 @@
 <p-menubar [model]="items">
   <ng-template #end>
     <div class="flex flex-row gap-x-2">
+      @if (isSignedIn()) {
       <p-popover #op>
         <ng-template #content>
           <h2
@@ -14,7 +15,7 @@
       <button pButton (click)="op.toggle($event)">
         <span class="pi pi-plus"></span>
       </button>
-      @if (isSignedIn()) {
+      } @if (isSignedIn()) {
       <button (click)="onSignOut()" pButton label="Sign out" icon="pi pi-sign-out"></button>
       } @else {
       <a routerLink="/login">
@@ -77,7 +78,7 @@
         <label class="block text-sm font-semibold mb-2">Number of Floors</label>
         <input
           pInputText
-          formControlName="numOfFloors"
+          formControlName="num_of_floors"
           placeholder="Number of floors"
           class="w-full"
         />
@@ -88,7 +89,7 @@
         <p-datepicker
           view="year"
           dateFormat="yy"
-          formControlName="buildYear"
+          formControlName="build_year"
           [autofocus]="false"
           showIcon
           class="w-full"
@@ -98,7 +99,7 @@
       <div>
         <label class="block text-sm font-semibold mb-2">Property Type</label>
         <p-select
-          formControlName="propertyType"
+          formControlName="property_type"
           [options]="propertyOptions"
           placeholder="Property type"
           [autofocus]="false"
@@ -109,12 +110,25 @@
       <div>
         <label class="block text-sm font-semibold mb-2">Transaction Type</label>
         <p-select
-          formControlName="transactionType"
+          formControlName="transaction_type"
           [options]="transactionOptions"
           placeholder="Transaction type"
           [autofocus]="false"
           class="w-full"
         ></p-select>
+      </div>
+
+      <div class="flex justify-center items-center">
+        <p-fileupload
+          #fu
+          name="demo[]"
+          mode="basic"
+          accept="image/*"
+          chooseIcon="pi pi-upload"
+          [customUpload]="true"
+          (uploadHandler)="onUpload($event)"
+        >
+        </p-fileupload>
       </div>
 
       <div class="col-span-2">
