@@ -1,30 +1,27 @@
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from typing import Iterable
 
 from pydantic import UUID4
 
 from app.domain.dtos.filter_dto import FilterDTO
 from app.domain.dtos.sort_options_dto import SortOptions
-from app.infrastructure.models.listing_photo_model import ListingPhoto
-from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 from app.domain.models.listing_update import ListingUpdate
+from app.presentation.schemas.listing_schema import ListingDB, ListingIn
 
 
 class IListingService(ABC):
     @abstractmethod
-    async def save_photos(self, photos: List[ListingPhoto]):
+    async def save_listing(self, listings: Iterable[ListingIn]) -> Iterable[ListingDB]:
         """abstract method"""
 
     @abstractmethod
-    async def save_listing(self, listings: Iterable[ListingIn]):
-        """abstract method"""
-
-    @abstractmethod
-    async def get_listings(self, sort_options: SortOptions, filter: FilterDTO) -> Iterable[ListingDB]:
+    async def get_listings(
+        self, sort_options: SortOptions, filter: FilterDTO
+    ) -> Iterable[ListingDB]:
         """
 
-    Returns:
-            ListingDB: _description_
+        Returns:
+                ListingDB: _description_
         """
 
     @abstractmethod
@@ -36,5 +33,7 @@ class IListingService(ABC):
         """abstract method"""
 
     @abstractmethod
-    async def patch_listing(self, listing_id: UUID4, listing: ListingUpdate) -> ListingDB:
+    async def patch_listing(
+        self, listing_id: UUID4, listing: ListingUpdate
+    ) -> ListingDB:
         """abstract method"""
