@@ -83,21 +83,21 @@ class EmailService(IEmailService):
                 Price: {{ price }} PLN
             </div>
             <div class="header-div">
-                {{ location }},<br>
-                {{ street }}<br>
-                {{ area }}
+                {{ location }}, {{ street }}
             </div>
         </header>
         <div class="table-container">
             <table>
                 <tr>
-                    <td colspan="4">Additional information</td>
+                    <td colspan="6">Additional information</td>
                 </tr>
                 <tr>
                     <td>Property type</td>
                     <td>{{ property_type }}</td>
                     <td>Floor</td>
                     <td>{{ floor }}</td>
+                    <td>Area</td>
+                    <td>{{ area }}</td>
                 </tr>
                 <tr>
                     <td>Number of floors</td>
