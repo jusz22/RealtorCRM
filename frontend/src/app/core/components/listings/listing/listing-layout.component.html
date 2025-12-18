@@ -1,37 +1,65 @@
 <p-toast />
-<div class="flex flex-row justify-around m-5">
-  <p>Client: Someone</p>
-  <p>User: Someone</p>
-  <p>{{ listingId() }}</p>
+<div class="pt-4">
+  <p-menubar
+    [model]="menubarItems"
+    [pt]="{
+      root: 'bg-(--p-surface-700)! border-0! rounded! mx-4!'
+    }"
+  >
+    <ng-template #end>
+      <p-popover #op>
+        <ng-template #content>
+          <div>
+            <ul>
+              <li
+                class="flex align-middle cursor-pointer justify-center rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg"
+              >
+                <button
+                  type="button"
+                  class="text-md p-3 cursor-pointer"
+                  (click)="onAddNote()"
+                  data-testid="add-note-action"
+                >
+                  Add note
+                </button>
+              </li>
+              <li
+                class="flex align-middle cursor-pointer justify-center rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg"
+              >
+                <button
+                  type="button"
+                  class="text-md p-3 cursor-pointer"
+                  (click)="onAddPhoto()"
+                  data-testid="add-photo-action"
+                >
+                  Add photo
+                </button>
+              </li>
+              <li
+                class="flex align-middle cursor-pointer justify-center rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg"
+                (click)="onExport()"
+              >
+                <button
+                  type="button"
+                  class="text-md p-3 cursor-pointer"
+                  data-testid="add-photo-action"
+                >
+                  Export
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </p-popover>
+      <button pButton type="button" (click)="op.toggle($event)" data-testid="add-note-menu-button">
+        <span class="pi pi-plus"></span>
+      </button>
+    </ng-template>
+  </p-menubar>
 </div>
-
-<p-menubar
-  [model]="menubarItems"
-  [pt]="{
-    root: 'bg-(--p-surface-700)! border-0! rounded! mx-4!'
-  }"
->
-  <ng-template #end>
-    <p-popover #op>
-      <ng-template #content>
-        <button
-          type="button"
-          class="text-md p-3 rounded-lg transition-all duration-300 hover:bg-white/20 hover:backdrop-blur-md hover:shadow-lg cursor-pointer"
-          (click)="onAddNote()"
-          data-testid="add-note-action"
-        >
-          Add note
-        </button>
-      </ng-template>
-    </p-popover>
-    <button pButton type="button" (click)="op.toggle($event)" data-testid="add-note-menu-button">
-      <span class="pi pi-plus"></span>
-    </button>
-  </ng-template>
-</p-menubar>
-<p-dialog [(visible)]="showingDialog" header="Add a note" [resizable]="false">
-  @if(fg) {
-  <form [formGroup]="fg" (ngSubmit)="onSubmit()">
+<p-dialog [(visible)]="showingNoteDialog" header="Add a note" [resizable]="false">
+  @if(noteFg) {
+  <form [formGroup]="noteFg" (ngSubmit)="onNoteSubmit()">
     <div class="flex flex-col justify-center gap-4 mb-4">
       <label>Note</label>
       <textarea
@@ -49,13 +77,87 @@
         type="button"
         pButton
         label="Cancel"
-        (click)="onCancel()"
+        (click)="onNoteCancel()"
         severity="danger"
         data-testid="note-cancel-button"
       ></button>
     </div>
   </form>
   }
+</p-dialog>
+<p-dialog [(visible)]="showingPhotoDialog" header="Add listing photos" [resizable]="false">
+  <div class="flex flex-col justify-center gap-4 m-6">
+    <p-fileupload
+      #photoUpload
+      mode="advanced"
+      [multiple]="true"
+      accept="image/*"
+      chooseIcon="pi pi-upload"
+      [customUpload]="true"
+      (uploadHandler)="handlePhotoUpload($event)"
+    >
+      <ng-template #header let-chooseCallback="chooseCallback">
+        <button
+          (click)="choose($event, chooseCallback)"
+          class="m-auto"
+          pButton
+          label="Select"
+          icon="pi pi-upload"
+        ></button>
+      </ng-template>
+    </p-fileupload>
+  </div>
+  <div class="flex justify-center gap-3">
+    <button
+      pButton
+      label="Confirm"
+      data-testid="photo-confirm-button"
+      (click)="onPhotoSubmit()"
+    ></button>
+    <button
+      type="button"
+      pButton
+      label="Cancel"
+      (click)="onPhotoCancel()"
+      severity="danger"
+      data-testid="photo-cancel-button"
+    ></button>
+  </div>
+</p-dialog>
+<p-dialog [(visible)]="showingExportDialog" header="Export" [resizable]="false" [modal]="true">
+  <div class="flex flex-col justify-center gap-4 mb-4">
+    <label>Client:</label>
+    <p-select
+      class="m-auto min-w-66"
+      [options]="clientOptions"
+      optionLabel="full_name"
+      [(ngModel)]="selectedClient"
+      placeholder="Select a client"
+      [filter]="true"
+      filterBy="full_name"
+      appendTo="body"
+    >
+    </p-select>
+  </div>
+  <ng-template #footer>
+    <div class="flex justify-center gap-3 m-auto">
+      <button
+        (click)="handleEmailExport()"
+        type="button"
+        pButton
+        label="Send"
+        data-testid="export-send-button"
+      ></button>
+      <button
+        type="button"
+        pButton
+        label="Cancel"
+        (click)="onExportCancel()"
+        severity="danger"
+        data-testid="export-cancel-button"
+      ></button>
+    </div>
+  </ng-template>
 </p-dialog>
 
 <router-outlet></router-outlet>

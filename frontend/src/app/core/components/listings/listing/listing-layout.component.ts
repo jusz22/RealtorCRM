@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { ListingService } from './listing.service';
 import { Listing } from './listing.model';
@@ -19,6 +19,11 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { FileUpload, FileUploadHandlerEvent } from 'primeng/fileupload';
+import { Select } from 'primeng/select';
+import { Client } from '../../../services/clients.model';
+import { ExportService } from './export.service';
+import { ClientService } from '../../../services/clients.service';
 
 @Component({
   selector: 'app-listing-layout',
@@ -33,6 +38,8 @@ import {
     ReactiveFormsModule,
     TextareaModule,
     ToastModule,
+    FileUpload,
+    Select,
   ],
   providers: [MessageService],
 })
@@ -43,10 +50,17 @@ export class ListingLayoutComponent implements OnInit {
   private readonly currentUser$ = inject(AuthService).getCurrentUser();
   private readonly notesStateService = inject(NotesStateService);
   private readonly messageService = inject(MessageService);
+  private readonly exportService = inject(ExportService);
+  private readonly clientService = inject(ClientService);
   protected readonly listingId = signal('');
   protected readonly listingData = signal<Listing | null>(null);
-  protected showingDialog: boolean = false;
-  protected fg!: FormGroup;
+  protected showingNoteDialog: boolean = false;
+  protected showingPhotoDialog: boolean = false;
+  protected showingExportDialog: boolean = false;
+  protected selectedClient: Client | null = null;
+  protected clientOptions: Client[] | null = null;
+  protected noteFg!: FormGroup;
+  @ViewChild('photoUpload') photoUpload!: FileUpload;
 
   protected readonly menubarItems: MenuItem[] = [
     {
@@ -73,14 +87,19 @@ export class ListingLayoutComponent implements OnInit {
         this.listingData.set(data);
       });
     });
+    this.clientService.getClients().subscribe({
+      next: (clients) => {
+        this.clientOptions = clients;
+      },
+    });
   }
 
-  onSubmit() {
+  onNoteSubmit() {
     this.currentUser$.subscribe({
       next: (user) => {
         this.activatedRoute.params.subscribe({
           next: (params) => {
-            this.notesService.addNote(params['id'], user.id, this.fg.value['note']).subscribe({
+            this.notesService.addNote(params['id'], user.id, this.noteFg.value['note']).subscribe({
               next: (value) => {
                 this.notesStateService.addNote(value);
                 this.messageService.add({
@@ -95,15 +114,63 @@ export class ListingLayoutComponent implements OnInit {
         });
       },
     });
-    this.showingDialog = false;
+    this.showingNoteDialog = false;
   }
 
-  onCancel() {
-    this.showingDialog = false;
+  onNoteCancel() {
+    this.showingNoteDialog = false;
   }
 
   onAddNote() {
-    this.fg = new FormGroup({ note: new FormControl('', Validators.required) });
-    this.showingDialog = true;
+    this.noteFg = new FormGroup({ note: new FormControl('', Validators.required) });
+    this.showingNoteDialog = true;
+  }
+
+  onAddPhoto() {
+    this.showingPhotoDialog = true;
+  }
+
+  choose(event: any, callback: any) {
+    callback();
+  }
+
+  onPhotoSubmit() {
+    if (this.photoUpload.files.length == 0) return;
+    this.photoUpload.uploader();
+    this.showingPhotoDialog = false;
+    this.photoUpload.clear();
+  }
+
+  onPhotoCancel() {
+    this.photoUpload.clear();
+    this.showingPhotoDialog = false;
+  }
+
+  handlePhotoUpload(event: FileUploadHandlerEvent) {
+    if (!this.listingId()) return;
+    this.listingService.uploadPhotos(this.listingId(), event.files).subscribe({
+      next: () => {
+        console.log('photos uploaded');
+      },
+    });
+  }
+
+  onExport() {
+    this.showingExportDialog = true;
+  }
+
+  onExportCancel() {
+    this.showingExportDialog = false;
+    this.selectedClient = null;
+  }
+
+  handleEmailExport() {
+    if (this.selectedClient) {
+      if (this.listingId()) {
+        this.exportService.sendEmail(this.listingId(), this.selectedClient.email).subscribe(() => {
+          this.showingExportDialog = false;
+        });
+      }
+    }
   }
 }
