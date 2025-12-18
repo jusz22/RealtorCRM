@@ -1,0 +1,23 @@
+.filter-panel {
+  animation: filterPanelSlideIn 320ms cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+  box-shadow: -6px 0 16px rgba(0, 0, 0, 0.08);
+  will-change: transform, opacity;
+}
+
+@keyframes filterPanelSlideIn {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-panel {
+    animation: none;
+  }
+}
