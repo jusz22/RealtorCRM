@@ -1,1 +1,96 @@
-<sha-table [columns]="columns" [data]="(data$ | async) ?? []" [selectable]="true" />
+<div class="flex flex-row p-4 pb-0 gap-2 justify-end">
+  @if(sortOrder === 'asc') {
+  <button pButton type="button" (click)="onSort('desc')">
+    <i pButtonIcon class="pi pi-sort-amount-up"></i>
+  </button>
+  } @else {
+  <button pButton type="button" (click)="onSort('asc')">
+    <i pButtonIcon class="pi pi-sort-amount-down"></i>
+  </button>
+  }
+  <button pButton type="button" (click)="onFilterModuleDisplay()">
+    <i pButtonIcon class="pi pi-search"></i>
+    <span pButtonLabel>Search</span>
+  </button>
+</div>
+<div class="flex flex-row flex-1 h-[calc(100vh-118px)] gap-2 p-4">
+  <div class="flex flex-col gap-2 min-w-1/2 w-full overflow-y-auto pr-2">
+    @for(listing of filteredData(); track listing.id) {
+    <app-listing-elem [listing]="listing" />
+    }
+  </div>
+  @if (displayFilterModule) {
+  <div class="p-card max-w-1/2 min-w-1/2 overflow-y-auto bg-gray-600 p-4 filter-panel">
+    <form [formGroup]="filterFg" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <label for="title">Title</label>
+        <input pInputText formControlName="title" id="title" />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="priceFrom">Price from</label>
+          <input pInputText formControlName="priceFrom" type="number" id="priceFrom" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="priceTo">Price to</label>
+          <input pInputText formControlName="priceTo" type="number" id="priceTo" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="areaFrom">Area from</label>
+          <input pInputText formControlName="areaFrom" type="number" id="areaFrom" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="areaTo">Area to</label>
+          <input pInputText formControlName="areaTo" type="number" id="areaTo" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="priceAreaFrom">Price/area from</label>
+          <input pInputText formControlName="priceAreaFrom" type="number" id="priceAreaFrom" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="priceAreaTo">Price/area to</label>
+          <input pInputText formControlName="priceAreaTo" type="number" id="priceAreaTo" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="location">Location</label>
+          <input pInputText formControlName="location" id="location" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="street">Street</label>
+          <input pInputText formControlName="street" id="street" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="propertyType">Property type</label>
+          <p-select
+            inputId="propertyType"
+            formControlName="propertyType"
+            [options]="propertyOptions"
+            placeholder="Select property type"
+          ></p-select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="transactionType">Transaction type</label>
+          <p-select
+            inputId="transactionType"
+            formControlName="transactionType"
+            [options]="transactionOptions"
+            placeholder="Select transaction type"
+          ></p-select>
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end">
+        <button pButton type="submit">Search</button>
+        <button pButton type="button" (click)="onReset()">Reset</button>
+      </div>
+    </form>
+  </div>
+  }
+</div>
