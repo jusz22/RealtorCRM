@@ -78,6 +78,5 @@ def driver():
     service = Service(ChromeDriverManager().install())
     options = _build_chrome_options()
     chrome_driver = webdriver.Chrome(service=service, options=options)
-    chrome_driver.delete_all_cookies()
     yield chrome_driver
     chrome_driver.quit()
