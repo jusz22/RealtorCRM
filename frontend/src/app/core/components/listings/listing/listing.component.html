@@ -1,23 +1,61 @@
 <div class="p-4 flex flex-col items-start md:flex-row gap-3">
-  <div class="bg-(--p-surface-700) rounded-3xl p-2 md:w-1/2 min-w-xl min-h-1/6">
-    <h2 class="font-bold text-xl m-4">Informacje podstawowe:</h2>
+  <div class="bg-(--p-surface-700) rounded-3xl p-2 pb-6 md:w-1/2 min-w-xl min-h-1/6">
+    <h2 class="font-bold text-xl m-4">Basic information:</h2>
 
     <div class="flex flex-wrap justify-evenly gap-2">
       @for (field of displayListingData(); track field) {
       <sha-editable-field class="mx-auto" [data]="field" (updateField)="updateField($event)" />
       }
+      <div class="flex flex-col m-auto w-96 gap-1">
+        <label class="pl-1 text-sm" for="status">Status:</label>
+        <p-tag class="status" [rounded]="true" [value]="listingData()?.status"></p-tag>
+      </div>
+      <div class="flex flex-col w-96 gap-0.5 m-auto">
+        <label class="pl-1 text-sm" for="user">User:</label>
+        <p-select
+          (onChange)="onUpdateUser($event)"
+          [options]="users"
+          optionLabel="username"
+          [(ngModel)]="user"
+          [pt]="{ root: 'bg-(--p-surface-900)! rounded! border-white! h-[38px]!' }"
+        >
+          <ng-template #dropdownicon> </ng-template>
+        </p-select>
+      </div>
     </div>
   </div>
   <div class="bg-(--p-surface-700) rounded-3xl md:w-1/2 min-w-xl p-5">
     <div class="bg-(--p-surface-900)">
+      @if(!images.length) {
+      <div class="flex justify-center items-center m-auto h-96">
+        <h1 class="font-bold">No photos found for this listing.</h1>
+      </div>
+      } @else {
+
       <p-galleria [value]="images" [showThumbnails]="true">
         <ng-template #item let-item>
-          <img [src]="item.source" class="max-h-96 mt-4" />
+          <img (click)="onFullScreenToggle()" [src]="item.source" class="max-h-96 mt-4" />
         </ng-template>
         <ng-template #thumbnail let-item>
           <img [src]="item.thumbnail" class="max-h-16" />
         </ng-template>
       </p-galleria>
+      }
     </div>
   </div>
 </div>
+@if(galleriaFullScreen) {
+<p-galleria
+  [value]="images"
+  [showThumbnails]="true"
+  [fullScreen]="true"
+  [(visible)]="galleriaFullScreen"
+>
+  <ng-template #item let-item>
+    <img [src]="item.source" class="max-h-[80vh]" />
+  </ng-template>
+  <ng-template #thumbnail let-item>
+    <img [src]="item.thumbnail" class="max-h-16" />
+  </ng-template>
+</p-galleria>
+}
