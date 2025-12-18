@@ -1,0 +1,84 @@
+<p-card
+  class="hover:bg-(--p-primary-600)! hover:cursor-pointer"
+  (click)="handleSelectRedirect()"
+  [pt]="{ root: 'bg-(--p-surface-700)!' }"
+>
+  <ng-template #title>
+    <header>
+      <h3>{{ listing().location }}, {{ listing().street }}</h3>
+    </header>
+  </ng-template>
+
+  <article class="flex flex-col gap-4 md:flex-row">
+    @if(imageUrl) {
+    <img class="max-w-64 max-h-48" [src]="imageUrl" />
+    } @else {
+    <section
+      class="flex items-center justify-center md:flex-none bg-(--p-surface-600)! rounded"
+      aria-label="Listing photo placeholder"
+    >
+      <div class="flex flex-col items-center text-center gap-1 w-64">
+        <p><strong>Photo</strong></p>
+        <p>Preview unavailable</p>
+      </div>
+    </section>
+    }
+
+    <div class="grid grid-flow-col grid-rows-4 md:grid-rows-3 gap-4 flex-1">
+      <div class="flex flex-col gap-1">
+        <p><strong>Title</strong></p>
+        <p>{{ listing().title }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Property Type</strong></p>
+        <p>{{ listing().property_type }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Transaction Type</strong></p>
+        <p>{{ listing().transaction_type }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Price</strong></p>
+        <p>{{ listing().price | currency : 'USD' : 'symbol' : '1.0-0' }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Area</strong></p>
+        <p>{{ listing().area | number : '1.0-0' }} m²</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Price per Area</strong></p>
+        <p>{{ listing().price_per_area | number : '1.0-0' }} per m²</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Floor</strong></p>
+        <p>{{ listing().floor }} / {{ listing().num_of_floors }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Build Year</strong></p>
+        <p>{{ listing().build_year }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Created</strong></p>
+        <p>{{ listing().created_at | date : 'mediumDate' }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>User</strong></p>
+        <p>{{ user()?.username ?? 'Not assigned' }}</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <p><strong>Status</strong></p>
+        <p>{{ listing().status }}</p>
+      </div>
+    </div>
+  </article>
+</p-card>
