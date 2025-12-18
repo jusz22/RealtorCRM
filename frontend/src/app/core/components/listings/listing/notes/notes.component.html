@@ -1,7 +1,9 @@
 <div class="flex flex-col p-4">
-  @for(note of notes(); track note.id) {
+  @if(notes().length === 0) {
+  <h6 class="m-auto mt-12 text-2xl">No notes found!</h6>
+  } @else { @for(note of notes(); track note.id) {
   <app-note [note]="note" (onDelete)="onDelete($event)" (onEdit)="onEdit($event)" />
-  }
+  } }
 </div>
 <p-dialog [(visible)]="showingEditDialog" header="Edit a note" [resizable]="false">
   @if(formGroup) {
