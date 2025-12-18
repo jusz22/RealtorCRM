@@ -1,8 +1,13 @@
 import datetime
 from typing import Optional
+
 from pydantic import UUID4, BaseModel, ConfigDict
 
-from app.infrastructure.models.listing_model import PropertyType, TransactionType
+from app.infrastructure.models.listing_model import (
+    PropertyType,
+    Status,
+    TransactionType,
+)
 
 
 class ListingIn(BaseModel):
@@ -13,14 +18,17 @@ class ListingIn(BaseModel):
     price: int
     area: float
     property_type: PropertyType
-    description: str 
+    description: str
     transaction_type: TransactionType
     floor: str
-    num_of_floors: str 
+    num_of_floors: str
     build_year: str
+    user_id: Optional[int] = None
+    status: Status
+
 
 class ListingDB(ListingIn):
     id: UUID4
-    created_at: datetime.datetime  
+    created_at: datetime.datetime
     price_per_area: float
     model_config = ConfigDict(from_attributes=True)

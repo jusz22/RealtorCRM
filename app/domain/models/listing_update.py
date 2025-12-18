@@ -17,3 +17,4 @@ class ListingUpdate(BaseModel):
     num_of_floors: Optional[str] = None
     build_year: Optional[str] = None
     created_at: Optional[datetime.datetime] = None
+    user_id: Optional[int] = None
