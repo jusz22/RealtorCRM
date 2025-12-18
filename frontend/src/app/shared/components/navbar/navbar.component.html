@@ -14,7 +14,12 @@
           </button>
         </ng-template>
       </p-popover>
-      <button pButton type="button" (click)="op.toggle($event)" data-testid="add-listing-menu-button">
+      <button
+        pButton
+        type="button"
+        (click)="op.toggle($event)"
+        data-testid="add-listing-menu-button"
+      >
         <span class="pi pi-plus"></span>
       </button>
       } @if (isSignedIn()) {
@@ -160,6 +165,7 @@
         <p-fileupload
           #fu
           name="demo[]"
+          [multiple]="true"
           mode="basic"
           accept="image/*"
           chooseIcon="pi pi-upload"

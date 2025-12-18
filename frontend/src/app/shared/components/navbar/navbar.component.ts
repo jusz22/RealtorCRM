@@ -22,7 +22,7 @@ import {
 } from '../../../core/components/listings/listing/listing.model';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
-import { FileUpload, FileUploadHandlerEvent } from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload, FileUploadHandlerEvent } from 'primeng/fileupload';
 import { ListingService } from '../../../core/components/listings/listing/listing.service';
 
 @Component({
