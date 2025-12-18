@@ -1,9 +1,10 @@
-import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, SecurityContext } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Listing, ListingInput } from './listing.model';
 import { map, Observable } from 'rxjs';
 import { Image } from './image.model';
 import { DomSanitizer } from '@angular/platform-browser';
+import { User } from './listing.component';
 
 @Injectable({ providedIn: 'root' })
 export class ListingService {
@@ -35,7 +36,7 @@ export class ListingService {
 
     photos.forEach((photo) => formData.append('files', photo));
 
-    return this.http.post(
+    return this.http.post<Image>(
       `http://localhost:8000/api/v1/listings/${listingId}/photos/batch`,
       formData
     );
@@ -54,5 +55,13 @@ export class ListingService {
           return this.sanitizer.bypassSecurityTrustUrl(url);
         })
       );
+  }
+
+  getUsers() {
+    return this.http.get<User[]>('http://localhost:8000/api/v1/users/');
+  }
+
+  getUser(userId: number) {
+    return this.http.get<User>(`http://localhost:8000/api/v1/users/${userId}`);
   }
 }
